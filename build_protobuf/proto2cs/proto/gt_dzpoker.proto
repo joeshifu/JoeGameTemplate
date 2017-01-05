@@ -1,0 +1,150 @@
+/*
+德州扑克
+code 2100~2199
+*/
+syntax = "proto3";
+package gt_msg;
+
+//import "gt_base.proto";
+
+//发送扑克 2140
+message CMD_S_SpChairID{
+	  int32 wChairID=1;
+}
+
+//游戏状态 2141
+message CMD_S_StatusFree{
+	  int64 lCellMinScore = 1; //最小下注
+	  int64 lCellMaxScore = 2;//最大下注
+}
+
+//游戏状态 2142
+message CMD_S_StatusPlay{
+	//加注信息
+	  int64 lCellScore=1;							//单元下注
+	  int64 lTurnMaxScore=2;						//最大下注
+	  int64 lTurnLessScore=3;						//最小下注
+	  int64 lCellMaxScore=4;						//最大下注
+	  int64 lAddLessScore=5;						//加最小注
+	repeated int64 lTableScore=6;			//下注数目
+	repeated int64 lTotalScore=7;			//累计下注
+	  int64 lCenterScore=8;						//中心筹码
+	  int64 llFollowScore=9;
+	//状态信息
+	  int32 wDUser=10;								//D玩家
+	  int32 wCurrentUser=11;						//当前玩家
+	repeated int32 cbPlayStatus=12;			//游戏状态
+	  int32 cbBalanceCount=13;						//平衡次数
+	  int32 nAddType=14;							//-1梭哈放弃0跟123加注
+
+	//扑克信息
+	repeated CardData cbCenterCardData=15;	//中心扑克
+	repeated CardData cbHandCardData=16;			//桌面扑克
+}
+
+// 游戏结束时玩家手上的牌 2143
+message CardData{
+     repeated int32 cbCardData =1;
+}
+
+//发送扑克 2144
+message CMD_S_GameStart{
+	  int32 wCurrentUser=1;						//当前玩家
+	  int32 wDUser=2;								//D玩家
+	  int32 wMaxChipInUser=3;						//大盲注玩家	
+	  int64 lCellScore=4;							//单元下注
+	  int64 lTurnMaxScore=5;						//最大下注
+	  int64 lTurnLessScore=6;						//最小下注
+	  int64 lAddLessScore=7;						//加最小注
+	  int32 nAddType=8;							//-1梭哈放弃0跟123加注
+	  int32 wUserCount=9;
+	repeated int32 cbUserState=10;
+	repeated CardData cbCardData=11;	//用户扑克
+}
+
+//发送扑克 2145
+message CMD_S_SpUser{
+	repeated CardData cbAllData=1;	//用户扑克
+	repeated CardData cbCenterCardData=2;	//中心扑克
+}
+
+//用户下注 2146
+message CMD_S_AddScore{
+	  int32 wCurrentUser=1;						//当前用户
+	  int32 wAddScoreUser=2;						//加注用户
+	  int64 lAddScoreCount=3;						//加注数目
+	  int32 nAddType=4;							//=-1梭哈-2放弃-3让牌0跟123加注
+	  int64 lTurnLessScore=5;						//最少加注
+	  int64 lTurnMaxScore=6;						//最大下注
+	  int64 lAddLessScore=7;						//加最小注
+	repeated int32 cbShowHand=8;			//梭哈用户
+	  int32 nType=9;								//=-1梭哈放弃0跟123加注
+	  int64 llFollowScore=10;
+}
+
+//彩池边池 2147
+message CMD_S_ColorInfo{
+	repeated int64 llColorScore=1;
+	repeated int64 llAllColorScore=2;//0彩池1-7边池
+	  int32 nColorCount=3;
+	repeated int32 nUserColorIndex=4;
+}
+
+//用户放弃 2148
+message CMD_S_GiveUp{
+	  int32 wGiveUpUser=1; //放弃用户
+	  int64 lLost =2; //输掉金币	
+}
+
+//发牌数据包 2149
+message CMD_S_SendCard{
+      int32 nType=1;								//=-1梭哈放弃0跟123加注
+      int32 cbPublic=2;							//是否公牌
+	  int32 wCurrentUser=3;						//当前用户
+	  int32 cbSendCardCount=4;					//发牌数目
+	  CardData cbCenterCardData=5;	//中心扑克	
+}
+
+//游戏结束 2150
+message CMD_S_GameEnd{
+	  int32 cbTotalEnd=1;							//强退标志
+	repeated int64 lGameTax=2;				//游戏税收
+	repeated int64 lGameScore=3;			//游戏得分
+	repeated CardData cbCardData=4;	//用户扑克
+	repeated CardData cbLastCenterCardData=5;//最后扑克
+	repeated int32 cbEndCardKind=6;
+	repeated int32 cbEndLevel=7;						//8最大1最小0没有
+	repeated int32 cbEndColorIdxCount=8;					//分到边池个数
+	repeated EndColorIndex cbEndColorIdxArr=9;		//分到边池数组
+	repeated EndColorScore llEndColorScore=10;
+	repeated int64 llEndScoreArr=11;
+	repeated int64 llEndChipArr=12;
+	repeated int32 wChairID = 13;//玩家位置	
+	repeated int64 llEndWinColorScore=14;
+
+}
+
+message EndColorIndex{
+    repeated int32 colorIndex=1;
+}
+
+message EndColorScore{
+    repeated int64 colorScore=1;
+}
+
+//游戏结束 2151
+message CMD_S_OpenCard{
+	  int32 wWinUser=1;							//用户开牌
+}
+//用户加注 2152
+message CMD_C_AddScore{
+	  int64 lScore=1; //加注数目
+	  int32 nType=2; //加注方式（0跟1加2加3加4梭哈）
+}
+//用户放弃 2153
+message CMD_C_GiveUp{
+}
+//用户开牌 2154
+message CMD_C_OPEN_CARD{
+}
+

@@ -1,0 +1,48 @@
+{
+    "group": "qzhgame",
+    "libs": [
+				"libz.1.tbd",
+                "libc++.tbd",
+				"libz.tbd",
+    ],
+    "frameworks": [
+                    "Security.framework",
+                    "JavaScriptCore.framework",
+					"CoreLocation.framework",
+                    "QuartzCore.framework",
+                    "OpenGLES.framework",
+                    "SystemConfiguration.framework",
+                    "CoreGraphics.framework",
+                    "CoreTelephony.framework",
+					"CoreText.framework",
+					"CFNetwork.frmework",
+					"CoreMotion.framework",		
+					"storekit.framework",
+    ],
+    "headerpaths": [],
+    "files":   [
+				"IOSBundles/IappySDK/DependenceSDK/AlipaySDK/AlipaySDK.framework",
+				"IOSBundles/IappySDK/IapppayKit.framework",
+	],
+    "folders": [
+	"IOSBundles/"
+				
+	],    
+    "excludes": ["^.*.meta$", "^.*.mdown$", "^.*.pdf$"],
+    "compiler_flags": [],
+    "linker_flags": [],
+    "embed_binaries": [],
+    "plist":{
+        "NSAppTransportSecurity":{
+            "NSAllowsArbitraryLoads":true
+        },
+	    "urltype" : [
+            {
+                "schemes":["scheme.com.iapppay.IapppayDemo"]
+            }
+        ],
+		
+		
+    },
+
+}

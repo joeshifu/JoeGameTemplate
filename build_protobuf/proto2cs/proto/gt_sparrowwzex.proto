@@ -1,0 +1,191 @@
+/*
+温州二人麻将
+code 2200~2300(不包含2300)
+*/
+syntax = "proto3";
+package gt_msg;
+
+//import "gt_base.proto";
+
+//组合子项
+message WzMj_WeaveItem
+{
+	  int32	nWeaveKind = 1;						//组合类型
+	  int32	nCenterCard = 2;					//中心扑克
+	  bool	bPublicCard = 3;					//公开标志
+	  int32	nProvideUser = 4;					//供应用户
+};
+
+//2200.游戏状态，空闲
+message WzMj_MsgS_StatusFree
+{
+	  int64	llCellScore = 1;					//基础金币
+	  int32	nBankerUser = 2;					//庄家用户
+	repeated bool	bTrustee = 3;						//是否托管2
+
+};
+
+//2201.游戏状态，买顶底
+message WzMj_MsgS_StatusMaiDi
+{
+	  int64	llCellScore = 1;					//基础金币
+	  int64	llBaseScore = 2;                    // 底分
+	  int32	nBankerUser = 3;					//庄家用户
+	repeated bool	bTrustee = 4;						// 是否托管2
+	  bool	bBankerMaiDi = 5;                   // 庄家是否需要买底
+	  bool	bMeDingDi = 6;                      // 自己是否需要顶底
+};
+
+//2202.游戏状态，游戏
+message WzMj_MsgS_StatusPlay
+{
+	  int64	llCellScore = 1;					// 单元积分
+	  int32	nSiceCount1 = 2;					// 骰子点数
+	  int32	nSiceCount2 = 3;					// 骰子点数
+	  int32	nSiceCount3 = 4;					// 骰子点数
+	  int32	nBankerUser = 5;					//庄家用户
+	  int32	nCurrentUser = 6;					//当前用户
+	  int32	nActionCard = 7;					//动作扑克
+	  int32	nActionMask = 8;					//动作掩码
+	repeated int32	nHearStatus = 9;					//听牌状态2
+	  int32	nLeftCardCount = 10;					//剩余数目
+	repeated bool	bTrustee = 11;						//是否托管2
+	  int32	nOutCardUser = 12;					//出牌用户
+	  int32	nOutCardData = 13;					//出牌扑克
+	repeated int32	nDiscardCount = 14;					//丢弃数目2
+	repeated int32	nDiscardCard = 15;					//丢弃记录2x55,实际根据nDiscardCount来确定
+	repeated int32	nDingDi = 16;						//顶底结果2
+	repeated int32	nOutCardIndex = 17;                  // 已经打出的牌34(0-8万9-17条18-26同27-33东南西北中发白)
+	  int32	nCardCount = 18;						//扑克数目
+	repeated int32	nCardData = 19;						//扑克列表17
+	  int32	nSendCardData = 20;					//发送扑克
+	  int32	nGodsCardData = 21;					//财神牌
+	repeated int32	nWeaveCount = 22;					//组合数目2
+	repeated WzMj_WeaveItem	tagWeaveItemArray = 23;		//组合扑克2x5
+};
+
+//2203.游戏开始
+message WzMj_MsgS_GameStart
+{
+	  int32	nBankerUser = 1;					//庄家用户
+	  int32	nBankerCount = 2;					//连庄次数
+	  int64	llBaseScore = 3;					// 底分
+	  bool	bMaiDi = 4;                         // 庄家是否可以买底
+	repeated bool	bTrustee = 5;						//是否托管2
+};
+
+//2204.游戏开始发牌
+message WzMj_MsgS_GamePlay
+{
+	  int32	nSiceCount1 = 1;					// 骰子点数
+	  int32	nSiceCount2 = 2;					// 骰子点数
+	  int32	nSiceCount3 = 3;					// 骰子点数
+	  int32	nCurrentUser = 4;					// 当前用户
+	  int32	nUserAction = 5;					// 用户动作
+	  int32	nGodsCardData = 6;                  // 财神牌
+	repeated int32	nUserDingDi = 7;					// 玩家顶底情况2
+	repeated int32	nCardData = 8;						// 扑克列表2x17
+};
+
+//2205.出牌命令
+message WzMj_MsgS_OutCard
+{
+	  int32	nOutCardUser = 1;					//出牌用户
+	  int32	nOutCardData = 2;					//出牌扑克
+	  bool	bServer = 3;						//服务端强制操作
+};
+
+//2206.发送扑克
+message WzMj_MsgS_SendCard
+{
+	  int32	nCardData = 1;						//扑克数据
+	  int32	nActionMask = 2;					//动作掩码
+	  int32	nCurrentUser = 3;					//当前用户
+};
+
+//2207.听牌命令
+message WzMj_MsgS_ListenCard
+{
+	  int32	nListenUser = 1;					//听牌用户
+};
+
+//2208.操作提示
+message WzMj_MsgS_OperateNotify
+{
+	  int32	nResumeUser = 1;					//还原用户
+	  int32	nActionMask = 2;					//动作掩码
+	  int32	nActionCard = 3;					//动作扑克
+};
+
+//2209.操作命令
+message WzMj_MsgS_OperateResult
+{
+	  int32	nOperateUser = 1;					//操作用户
+	  int32	nProvideUser = 2;					//供应用户
+	  int32	nOperateCode = 3;					//操作代码
+	  int32	nOperateCard = 4;					//操作扑克
+	  bool	bServer = 5;						//服务端强制操作
+};
+
+//2210.游戏结束
+message WzMj_MsgS_GameEnd
+{
+	  int64	llGameTax = 1;						//游戏税收
+	  int32	nProvideUser = 2;					//供应用户
+	  int32	nProvideCard = 3;					//供应扑克
+	repeated int32	nChiHuKind = 4;						//胡牌类型2
+	repeated int32	nChiHuRight = 5;					//胡牌类型2
+	repeated int32	nDingDi = 6;						//买顶底2
+	repeated int64	llGameScore = 7;					//游戏积分2
+	repeated int64	llGodsScore = 8;					//游戏积分2
+	repeated int32	nCardCount = 9;						//扑克数目2
+	repeated int32	nCardData = 10;						//扑克数据2x17
+};
+//2211.用户托管
+message WzMj_MsgS_Trustee
+{
+	  bool	bTrustee = 1;						//是否托管
+	  int32	nChairID = 2;						//托管用户
+	  bool	bServer = 3;						//服务端强制操作
+};
+
+//2212.用户托管
+message WzMj_MsgS_DingDi
+{
+	  int32	nMaiDi = 1;							// 庄家买底结果
+	  int32	nChairID = 2;						// 顶底用户
+	  bool	bDingDi = 3;                        // 闲家是否可以顶底 
+	  bool	bServer = 4;						//服务端强制操作                
+};
+
+/////////////////////////////////////////////////////
+//客户端
+//2250.机器人代打
+message WzMj_MsgC_Robot
+{
+	  int32	wChairID = 1;						// 机器人座位号	
+};
+
+//2251.出牌命令
+message WzMj_MsgC_OutCard
+{
+	  int32	nCardData = 1;						//扑克数据
+};
+
+//2252.操作命令
+message WzMj_MsgC_OperateCard
+{
+	  int32	nOperateCode = 1;					//操作代码
+	  int32	nOperateCard = 2;					//操作扑克
+};
+//2253.用户托管
+message WzMj_MsgC_Trustee
+{
+	  bool	bTrustee = 1;						//是否托管	
+};
+
+//2254.玩家买顶底
+message WzMj_MsgC_DingDi
+{
+	  int32	nDingDi = 1;						// 顶底是否，如果是庄家表示买底	
+};

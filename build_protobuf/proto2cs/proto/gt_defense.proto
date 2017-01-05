@@ -1,0 +1,26 @@
+/*
+链接防御
+code 500~600
+*/
+syntax = "proto3";
+package gt_msg;
+
+ 
+ 
+ 
+//500 链接消息
+message RegDefense{
+	  string OnlyMark = 1;
+}
+
+ 
+//501 链接消息回复
+message RegDefenseReply{
+     float connsProportion = 1;
+     int32 ServerID = 2;
+}
+
+//502 2秒的心跳
+message DefenseHH{
+	   int32 parameterEx = 1;
+}

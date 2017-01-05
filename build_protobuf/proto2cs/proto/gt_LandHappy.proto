@@ -1,0 +1,330 @@
+/*
+欢乐斗地主
+code 3400~3500
+*/
+syntax = "proto3";
+package gt_msg;
+
+//import "gt_base.proto";
+
+
+//倍数信息 3400
+message LandHappy_S_DoubleInfo{
+	//公共位数
+	int32	wStartTime=1;		//初始倍数
+	int32	wValidCardTime=2;	//明牌倍数
+	int32	wRodBankerTime=3;	//抢地主倍数
+	int32	wBackCardTime=4;	//底牌倍数
+	int32	wBombTime=5;		//炸弹倍数
+	int32	wChunTianbTime=6;	//春天倍数
+	int32	wCardTypeTime=7;	//牌型倍数
+
+	//加倍过程
+	repeated int32	wUserDouble=8;	//用户加倍
+
+	//用户信息
+	int32	wBankerUser=9;			//庄家用户
+	int32	wMeChairID=10;			//玩家自己
+}
+
+//空闲状态 3401
+message LandHappy_S_StatusFree{
+	//游戏属性
+	int64	lCellScore=1;		//基础积分
+
+	//时间信息
+	int32	cbTimeCallBanker=2;	//叫地主时间
+	int32	cbTimeRodBanker=3;	//抢地主时间
+	int32	cbTimeAddDouble=4;	//加倍时间
+	int32	cbTimeStartGame=5;	//开始时间
+	int32	cbTimeHeadOutCard=6;//首出时间
+	int32	cbTimeOutCard=7;	//出牌时间
+	
+	//历史积分
+	repeated int64	lTurnScore=8;	//积分信息
+	repeated int64	lCollectScore=9;//积分信息
+}
+
+//叫地主状态 3402
+message LandHappy_S_StatusCall{
+	//时间信息
+	int32	cbTimeCallBanker=1;	//叫地主时间
+	int32	cbTimeRodBanker=2;	//抢地主时间
+	int32	cbTimeAddDouble=3;	//加倍时间
+	int32	cbTimeStartGame=4;	//开始时间
+	int32	cbTimeHeadOutCard=5;//首出时间
+	int32	cbTimeOutCard=6;	//出牌时间
+
+	//游戏信息
+	int64	lCellScore=7;				//单元积分
+	int32	wFirstUser=8;				//首叫用户
+	int32	wFirstValidUser=9;			//首叫明牌
+	int32	wCurrentUser=10;			//当前玩家
+	int32	wStartTime=11;				//初始倍数
+	int32	wValidCardTime=12;			//明牌倍数
+	repeated bool	bValidCardInfo=13;	//明牌信息
+	repeated int32	cbCallBankerInfo=14;//叫地主信息	
+	repeated int32	cbHandCardData=15;	//手上扑克
+
+	//历史积分
+	repeated int64	lTurnScore=16;		//积分信息
+	repeated int64	lCollectScore=17;	//积分信息
+}
+
+//抢地主状态 3403
+message LandHappy_S_StatusRod{
+	//时间信息
+	int32	cbTimeCallBanker=1;	//叫地主时间
+	int32	cbTimeRodBanker=2;	//抢地主时间
+	int32	cbTimeAddDouble=3;	//加倍时间
+	int32	cbTimeStartGame=4;	//开始时间
+	int32	cbTimeHeadOutCard=5;//首出时间
+	int32	cbTimeOutCard=6;	//出牌时间
+
+	//游戏信息
+	int64	lCellScore=7;		//单元积分
+	int32	wFirstUser=8;		//首叫用户
+	int32	wFirstValidUser=9;	//首叫明牌
+	int32	wBankerUser=10;		//庄家用户
+	int32	wCurrentUser=11;	//当前用户
+
+	int32	wStartTime=12;		//初始倍数
+	int32	wValidCardTime=13;	//明牌倍数
+	int32	wRodBankerTime=14;	//抢地主倍数
+
+	repeated bool	bValidCardInfo=15;	//明牌信息
+	repeated int32	cbCallBankerInfo=16;//叫地主信息	
+	repeated int32	cbRodBankerInfo=17;	//抢地主信息
+	repeated int32	cbValidCardInfo=18;	//叫地主信息
+	repeated int32	cbHandCardData=19;	//手上扑克
+
+	//历史积分
+	repeated int64	lTurnScore=20;		//积分信息
+	repeated int64	lCollectScore=21;	//积分信息
+}
+
+//加倍状态 3404
+message LandHappy_S_StatusDouble{
+	//时间信息
+	int32	cbTimeCallBanker=1;	//叫地主时间
+	int32	cbTimeRodBanker=2;	//抢地主时间
+	int32	cbTimeAddDouble=3;	//加倍时间
+	int32	cbTimeStartGame=4;	//开始时间
+	int32	cbTimeHeadOutCard=5;//首出时间
+	int32	cbTimeOutCard=6;	//出牌时间
+
+	//游戏信息
+	int64	lCellScore=7;		//单元积分
+	int32	wBankerUser=8;		//庄家用户
+	int32	wCurrentUser=9;		//当前用户
+	int32	wStartTime=10;		//初始倍数
+	int32	wValidCardTime=11;	//明牌倍数
+	int32	wRodBankerTime=12;	//抢地主倍数
+	int32	wBackCardTime=13;	//底牌倍数
+
+	repeated bool	bValidCardInfo=14;	//明牌信息
+	repeated int32	cbCallBankerInfo=15;//叫地主信息	
+	repeated int32	cbRodBankerInfo=16;	//抢地主信息
+	repeated int32	cbAddDoubleInfo=17;	//加倍信息
+	
+	//扑克信息
+	repeated int32	cbBankerCard=18;	//游戏底牌
+	repeated int32	cbHandCardCount=19;	//扑克数目
+	repeated int32	cbHandCardData=20;	//手上扑克
+
+	//历史积分
+	repeated int64	lTurnScore=21;		//积分信息
+	repeated int64	lCollectScore=22;	//积分信息
+}
+
+//游戏状态 3405
+message LandHappy_S_StatusPlay{
+	//时间信息
+	int32	cbTimeCallBanker=1;	//叫地主时间
+	int32	cbTimeRodBanker=2;	//抢地主时间
+	int32	cbTimeAddDouble=3;	//加倍时间
+	int32	cbTimeStartGame=4;	//开始时间
+	int32	cbTimeHeadOutCard=5;//首出时间
+	int32	cbTimeOutCard=6;	//出牌时间
+
+	//游戏变量
+	int64	lCellScore=7;		//单元积分
+	int32	wBankerUser=8;		//庄家用户
+	int32	wCurrentUser=9;		//当前玩家
+
+	int32	wStartTime=10;		//初始倍数
+	int32	wValidCardTime=11;	//明牌倍数
+	int32	wRodBankerTime=12;	//抢地主倍数
+	int32	wBackCardTime=13;	//底牌倍数
+	int32	wBombTime=14;		//炸弹倍数
+	int32	wCardTypeTime=15;	//牌型倍数
+
+	int32	cbBombCount=16;		//炸弹次数
+	repeated int32	cbCallBankerInfo=17;//叫地主信息	
+	repeated int32	cbRodBankerInfo=18;	//抢地主信息
+	repeated int32	cbAddDoubleInfo=19;	//加倍信息	
+	repeated bool	bValidCardInfo=20;	//明牌信息
+
+	//出牌信息
+	int32	wTurnWiner=21;				//胜利玩家
+	int32	cbTurnCardCount=22;			//出牌数目
+	repeated int32	cbTurnCardData=23;	//出牌数据
+
+	//扑克信息
+	repeated int32	cbBankerCard=24;	//游戏底牌
+	repeated int32	cbHandCardCount=25;	//扑克数目
+	repeated int32	cbHandCardData=26;	//手上扑克
+	
+	//历史积分
+	repeated int64	lTurnScore=27;		//积分信息
+	repeated int64	lCollectScore=28;	//积分信息
+}
+
+//发送扑克 3406
+message LandHappy_S_GameStart{
+	int32	wStartUser=1;	    //开始玩家
+	int32	wCurrentUser=2;		//当前玩家
+	int32	wStartTime=3;		//初始倍数
+	bool	bValidCard=4;		//是否明牌
+	int32	cbValidCardData=5;	//明牌扑克
+	int32	cbValidCardIndex=6;	//明牌位置
+	repeated int32	cbCardData=7;//扑克列表
+}
+
+//机器人扑克 3407
+message LandHappy_S_AndroidCard{
+	repeated LandHappy_CardData	cbHandCard =1;//手上扑克
+	int32	 wCurrentUser =2;				  //当前玩家
+}
+
+message LandHappy_CardData{
+	repeated int32 HandCardData = 1;
+}
+
+//用户叫分 3408
+message LandHappy_S_CallScore{
+	int32	wCurrentUser=1;		//当前玩家
+	int32	wCallScoreUser=2;	//叫分玩家
+	int32	cbCurrentScore=3;	//当前叫分
+	int32	cbUserCallScore=4;	//上次叫分
+}
+
+//用户叫地主 3409
+message LandHappy_S_CallBanker{
+	int32	wCurrentUser=1;	//当前玩家
+	int32	wLastUser=2;	//叫地主玩家
+	int32	cbCallInfo=3;	//叫地主
+}
+
+//用户抢地主 3410
+message LandHappy_S_RodBanker{
+	int32	wRodBankerTime=1;//抢地主倍数
+
+	int32	wBankerUser=2;	//庄家玩家
+	int32	wCurrentUser=3;	//当前玩家	
+	int32	wLastUser=4;	//抢地主玩家
+	int32	cbRodlInfo=5;	//抢地主
+}
+
+//加倍信息 3411
+message LandHappy_S_Double{
+	int32	wCurrentUser=1;	//当前用户
+	int32	cbDouble=2;		//是否加倍
+}
+
+//用户明牌 3412
+message LandHappy_S_ValidCard{
+	int32	wFirstValidUser=1;		//首叫明牌
+	int32	wValidCardTime=2;		//明牌倍数
+
+	int32	wValidUser=3;			//明牌用户
+	int32	cbCardCount=4;			//明牌数目
+	repeated int32	cbCardData=5;	//扑克数据
+}
+
+//庄家信息 3413
+message LandHappy_S_BankerInfo{
+	int32	wBankerUser=1;			//庄家玩家
+	int32	wCurrentUser=2;			//当前玩家
+	int32	wBackCardTime=3;		//底牌倍数
+	repeated int32	cbBankerCard=4;	//庄家扑克
+	int32	cbBackCardType=5;		//底牌类型
+	repeated bool	bDoubleInfo=6;	//能否加倍
+}
+
+//开始信息 3414
+message LandHappy_S_Game_Start{
+	int32	wBankerUser=1;		//庄家玩家
+	int32	wCurrentUser=2;		//当前玩家
+	repeated int32	cbCardData=3;//扑克数据
+
+}
+
+
+//用户出牌 3415
+message LandHappy_S_OutCard{
+	int32	cbCardCount=1;			//出牌数目
+	int32	wCurrentUser=2;			//当前玩家
+	int32	wOutCardUser=3;			//出牌玩家
+	repeated int32	cbCardData=4;	//扑克列表
+}
+
+//放弃出牌 3416
+message LandHappy_S_PassCard{
+	int32	cbTurnOver=1;	//一轮结束
+	int32	wCurrentUser=2;	//当前玩家
+	int32	wPassCardUser=3;//放弃玩家
+}
+
+//游戏结束 3417
+message LandHappy_S_GameConclude{
+	//积分变量
+	int64	lCellScore=1;			//单元积分
+	repeated int64	lGameScore=2;	//游戏积分
+
+	//春天标志
+	int32	bChunTian=3;			//春天标志
+	int32	bFanChunTian=4;			//春天标志
+
+	//炸弹信息
+	int32	cbBombCount=5;			//炸弹个数
+	repeated int32	cbEachBombCount=6;//炸弹个数
+	//游戏信息
+	repeated int32	cbCardCount=7;	  //扑克数目
+	repeated int32	cbHandCardData=8; //扑克列表
+}
+
+
+//用户叫分 3418
+message LandHappy_C_CallScore{
+	int32	cbCallScore=1;	//叫分数目
+}
+
+//用户地主 3419
+message LandHappy_C_CallBanker{				
+	int32	cbCallInfo=1;	//叫地主
+}
+
+//用户抢地主 3420
+message LandHappy_C_RodBanker{				
+	int32	cbRodInfo=1;	//抢地主
+}
+
+//用户加倍 3421
+message LandHappy_C_Double{				
+	int32	cbDoubleInfo=1;	//加倍信息
+}
+
+//用户出牌 3422
+message LandHappy_C_OutCard{
+	int32	cbCardCount=1;		    //出牌数目
+	repeated int32	cbCardData=2;	//扑克数据
+}
+
+//放弃出牌 3423
+message LandHappy_C_PassCard{
+}
+
+//用户明牌 3424
+message LandHappy_C_ValidCard{
+}

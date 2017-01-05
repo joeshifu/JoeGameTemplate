@@ -1,0 +1,575 @@
+/*
+code    0~99
+*/
+syntax = "proto3";
+package gt_msg;
+//性别
+enum Gender {
+	Male = 0;
+	Female = 1;
+	Unknown = 2;
+}
+//牌桌规则
+enum Rule{
+	RuleNormal = 0;
+}
+//牌桌级别
+enum Rank{
+	LV0 = 0;
+	LV1 = 1;
+	LV2 = 2;
+	LV3 = 3;
+	LV4 = 4;
+	LV5 = 5;
+	LV6 = 6;
+	LV7 = 7;
+	LV8 = 8;
+	LV9 = 9;
+}
+//用户
+message User {
+     string userid = 1; //用户userid
+     string gameid =2; //用户gameid
+     string loginname =3;
+	 string nickname = 4;
+	 Gender sex = 5;
+	 int32 userflag = 6;//0:真实玩家 1：机器人
+	 string faceUrl = 7;
+	 int32 channel = 8;
+	 int32 createtime = 9;
+	 string idcard = 10;
+	 string email = 11;
+	 string mobile = 12;
+     int64 UserScore =13;//用户身上的分数
+	 int64 UserInsureScore=14;//用户银行的分数
+	 int64 UserDiamond =15;//用户钻石数
+	 int32  dwTableID=16;   //桌子号码
+	 int32  dwChairID=17;   //椅子号码
+	 int32  cbUserStatus=18;   //用户状态
+     int32  cbMemberOrder=19;//用户等级 0:普通玩家 1:会员玩家
+     string  szUnderWrite=20;//个性签名
+    //游戏信息
+     int32 dwWinCount=21; //胜利盘数
+     int32 dwLostCount=22;//失败盘数
+     int32 dwDrawCount=23;//和局盘数
+     int32 dwFleeCount=24;//逃跑盘数 
+    repeated int32 items_id = 25 ;//用户拥有的道具 ，都在这个里面，包括得到的鲜花鸡蛋
+	repeated int64 items_num = 26 ;//对应道具的数量
+     string uflag=27;
+}
+
+//游戏类型
+message tagGameType {
+	   int32  dwKindID=1;   //种类kindid
+	   int32  dwTypeID=2;   //种类类型
+	   int32  dwGameStatus=3; //游戏热度
+	   string szKindName=4;   //游戏进程名称
+	   string szKindNameCN=5; //游戏中文名称
+}
+
+//0.通讯错误信息
+message CommonError {
+	 int32 Code =1;
+	 string szDescribeString=2;//返回描述信息
+}
+
+//------------------------------------------------------------------------------
+//1.心跳请求
+message HHRequest{
+}
+//2.心跳回复
+message HHResponse{
+	 int32 serverTimeNow = 1;//time.now.unix()
+}
+//3.登陆请求
+message LoginRequest{
+	 string accounts = 1;        //账号
+	 string password = 2;        //密码	
+	 string sessionid = 3;       //sessionid
+	 string uid = 4;     	     //id
+	 int32  dwPlazaVersion = 5;	 //大厅版本
+	 string szMachineID = 6;     //机器码
+	 int32  dwLogonType = 7;     //平台标示
+	 int32  dwClientVersion = 8; //1000 2000 3000
+	 string dwClientIP = 9;      //IP
+}
+
+//4.登陆回复
+message LoginResponse{
+	int32 code =1;//返回状态码
+	User user = 2;
+	int32 signed = 3;
+	repeated string gameType = 4; //游戏种类
+	repeated tagGameType gameName = 5; //游戏名称
+    string  szDownLoadUrl = 6; //下载地址
+    string   szDescribeString =7;//返回登录信息
+}
+
+//5.请求下线
+message LogoutRequest {
+	 string uid = 1;
+}
+//6.下线答复
+message LogoutResponse {
+	enum LogoutResponseCode {
+		Ok = 0;
+		Forbidden = 1;
+		Fail = 2;
+		OtherLogin = 3;//账号从其他地方登陆
+		WillExitForOtherLogin = 4;//该局游戏结束，就退出
+	}
+	 LogoutResponseCode code = 1;
+}
+
+//7.用户项变化
+message ItemChangedEvent {
+	repeated int32 ItemTypes = 1;
+	repeated int64 ItemNums = 2; 
+}
+//8.请求在线人数 默认当前游戏
+message OnLineMembersRequest{
+     string gameName = 1;
+     int32  level = 2;         //请求级别：0全局，1初级场，2中级场，3高级场
+}
+//9.返回在线人数
+message OnLineMembersResponse{
+     string gameName = 1;//游戏name 如xzdd
+     int32 level = 2;         //请求级别：0全局，1初级场，2中级场，3高级场
+     int32 count = 3;         //人数
+}
+
+//12.chat 发送
+message UserChatMsgRequest{
+	 string uid = 1;
+	 string msg = 2;
+	 int32 type = 3;//1: text 2: voice
+	 bytes vmsg = 4;//voice
+}
+//13.chat 播放
+message UserChatMsgResponse{
+	 string uid = 1;
+	 string msg = 2;
+	 int32 type = 3;//1: text 2: voice
+	 bytes vmsg = 4;//voice
+}
+//14.用户申请取消托管
+message UserCancleTGRequest{
+}
+
+//15.用户请求所有消息id
+message UserMessageIdRequest {
+}
+
+//16.推送用户信箱消息id列表 服务器定时推送
+message UserMessageIdList{
+	repeated int32 ids = 1;//msg_id列表
+}
+
+//17.用户请求消息
+message UserMessageRequest {
+    repeated int32 ids = 1;
+}
+
+//18.返回用户信箱消息1条
+message UserMessageResponse {
+    enum UserMessageType {
+	    Text = 0;
+	    TextAndItem = 1;
+    }
+	 UserMessageType msg_type = 1;
+	 int32 msg_id = 2;
+	 bool has_read = 3;
+	 string sender_nick = 4;
+	 string json_params = 5;
+	 string msg_time = 6;
+}
+
+//19.用户信箱操作请求
+message UserMessageActionRequest {
+	enum UserMessageActionCode {
+		Delete = 0;
+		MarkAsRead = 1;        //暂时不用
+		PickItem = 2;
+	}
+	 UserMessageActionCode action = 1;
+	 int32 msg_id = 2;
+}
+
+//20.用户信箱操作回复 + ItemChangedEvent
+message UserMessageActionResponse {
+	enum UserMessageActRespCode {
+		Ok = 0;
+		NoSuchData = 1;
+		ItemAlreadyPicked = 2;
+		ItemNotExist = 3;
+	}
+	 UserMessageActRespCode code = 1;
+	 int32 msg_id = 2;
+	repeated int32 item_types = 3 ;
+	repeated int32 item_amounts = 4 ;
+	 UserMessageActionRequest.UserMessageActionCode action = 5;
+}
+//21.入场需求请求
+message EnterTableInfoRequest{
+     string gameName = 1;  //
+     int32  kindid = 2;
+     int32  dwLogonType =3;//平台标识
+}
+
+message EnterInfo{
+	 int32        minEnterScore = 1;           //进入门槛价格
+	 int32        minKickOutType = 2;         //踢人门槛类型
+	 int32        OnlineNum = 3;              //在线人数
+     string       mRoomName=4;                //房间名称
+     string       kindType=5;                 //唯一标识
+}
+
+message UpdateGameInfo{
+     string resName = 1;
+     string resMd5 =2;
+     int64 resSize =3;
+}
+
+//22.入场需求返回
+message EnterTableInfoResponse{
+     string gameName = 1;//游戏名称
+    repeated EnterInfo info = 2;//入场信息
+     UpdateGameInfo updateInfo =3;//小游戏检测更新
+}
+
+//23.修改昵称
+message AlterNicknameRequest{
+	 string nickname = 1;
+}
+
+//24.回复修改昵称
+message AlterNicknameResponse{
+	enum Code{
+		Ok  = 0; // 修改成功
+		Failed = 1; // 修改失败，其他位置原因
+		InvalidChar = 2; // 无效字符，中文下划线数字字母
+		InvalidLength = 3; // 无效长度，中文算作2个字符，其他字符算作一个，长度为3-12
+		Duplicate = 4; // 重复
+		BadWord = 5;  // 敏感词
+		CountExhaust = 6; // 次数用尽
+	}
+	 Code   code = 1;
+	 string nickname = 2;
+}
+
+//25.gw内部使用
+message EnterGameNotification {
+	 string uid = 1;
+	 string addr = 2;
+}
+
+//26.请求用户信息
+message UserInfoRequest{
+}
+
+//27.推动用户信息
+message UserInfoResponse{
+	 User user = 1;
+}
+
+//28.平台喇叭
+message UserDoHornRequest{
+	 string Context = 1;//长度控制40
+	 int32 lv = 2;//保留
+}
+//29.平台喇叭
+message UserDoHornResponse{
+ 	 int32 code = 1;
+	 int32 itemNum = 2;
+	 string szDescribeString = 3;
+}
+
+//30.推送信息
+message PushMessageResponse{
+	 string Title_color = 1;
+	 string Title = 2;
+	 string Context_color = 3;
+	 string Context = 4;
+	 int32  Msg_type = 5;//【跑马灯类】：0:功能触发消息1:喇叭消息2:特殊的系统消息3:普通的系统消息 【弹窗类】：4:警告消息5:提示消息，Title为uid 未完待续
+	 int32  Delay_time = 6;//延时
+	 string Msg_sender = 7;
+}
+
+//31.轮盘大旋转请求
+message LoginPrizeRequest{
+}
+//32.轮盘大旋转回复
+message LoginPrizeResponse{
+	enum LoginPrizeRespCode{
+	    OK = 0;
+	    NoTimes = 1;
+	    Other = 2;
+	}
+	 LoginPrizeRespCode code = 1;
+	 int32 prizeindex = 2;//轮盘上奖品的序号
+	 int32 prizetype = 3;//奖品类型
+	 int32 prizenum = 4;//奖品数量
+	 int32 prizerate = 5;//登录奖励倍数 10代表1 15代表1.5
+}
+
+//33.注册用户
+message RegUserRequest{
+	 string strAccounts = 1;
+	 string strNickName = 2;
+	 string strLogonPass = 3;
+	 string strInsurePass = 4;
+	 int32  cbGender = 5;
+     string strPassPortID = 6;
+     string strCompellation = 7;
+     string strClientIP = 8;
+     string strMachineID = 9;
+     int32  intRegisterFrom = 10;
+     int32  plazaversion=11;
+}
+
+//34.注册回复
+message RegUserResponse{
+	 int32  lResultCode = 1;
+	 string szDescribeString = 2;
+}
+
+
+//35.查询喇叭数量
+message HornNumRequest{
+	  string uid = 1;    //用户id
+	  int32  propid=2;   //道具类型
+}
+
+//36.喇叭数量回复
+message HornNumResponse{
+	   string prop_name = 1;  //道具名称
+	   int32  prop_id = 2;    //道具数量
+}
+
+//37.保险箱登陆
+message BXXSetRequest{
+	  string  userid=1;
+	  string  szPassword=2;
+}
+
+//38.保险箱验证回复
+message BXXSetResponse{
+	 int32 code  = 1;
+	  string  szDescribeString=2;
+}
+
+//39.保险箱资料查询
+message BankerQuestRequest{
+      string  userid=1;
+      int32  dwPlatformType =2;//平台标识 1:ios 2:Android 3:pc
+}
+
+message GameScore{
+	int32 gameKind =1; //游戏kindid
+	int64 gameScore =2;//小游戏身上的钱
+}
+
+//40.保险箱资料回复
+message BankerQuestResponse{
+     int32 Code =1;   //是否查询成功
+     repeated GameScore lUserScore = 2;//手上筹码
+     int64 lUserInsure = 3;//保险箱筹码
+     int64 lTransferPrerequisite=4;//转账条件
+     string  szDescribeString=5;//错误说明
+}
+
+//41.保险箱用户提取金币请求
+message UserTakeScoreRequest{
+    string userid =1;   //userid
+    string password =2; //password
+    int32 kindid =3;    //小游戏kind
+    int32 serverid =4;  //小游戏serverid
+    int64 take_score =5; //取的金币
+    string client_ip =6; //ip
+    string machine_id =7; //机器码
+}
+
+//42.保险箱用户提取金币回复
+message UserTakeScoreResponse{
+    int32 Code  = 1;//是否提取成功
+    int64 lUserScore = 2;//手上筹码
+    int64 lUserInsure = 3;//保险箱筹码
+    int32 kindid =4;//小游戏kindid
+    string szDescribeString=5;//返回状态信息
+}
+
+//43.保险箱用户存金币请求
+message UserSaveScoreRequest{
+    string userid =1;   //userid
+    string password =2; //password
+    int32 kindid =3;    //小游戏kind
+    int32 serverid =4;  //小游戏serverid
+    int64 save_score =5; //存的金币
+    string client_ip =6; //ip
+    string machine_id =7; //机器码
+}
+
+//44.保险箱用户存金币回复
+message UserSaveScoreResponse{
+    int32 Code  = 1;//是否存成功
+    int64 lUserScore = 2;//手上筹码
+    int64 lUserInsure = 3;//保险箱筹码
+    int32 kindid =4;//小游戏kindid
+    string szDescribeString=5;//返回状态信息
+}
+
+//45.用户增送请求 第一步验证目标账号信息
+message InquireUserRequest{
+     int32 type_id =1; //1是根据游戏ID 2是根据昵称
+     string game_id =2;//根据typeid填写游戏ID或者昵称
+}
+
+//46.用户增送回复  目标账号是否存在
+message InquireUserResponse{
+     int32 Code =1;//目标账号是否正确
+     string target_userid = 2;//目标账号userID
+     string target_gameid =3;
+     string szNickName =4;//目标账号昵称
+     string szDescribeString=5;//返回状态信息
+}
+
+//47.保险箱用户增送请求
+message UserTransfersRequest{
+     string userid =1;
+     string password =2;
+     string target_userid =3; //目标账号userID
+     int64 swapscore =5; //转账金额
+     int32 kindid =6; 
+     int32 serverid =7;
+     string client_ip =8; //ip
+     string machine_id =9; //机器码
+}
+
+//48.保险箱用户增送请求回复
+message UserTransfersResponse{
+     int32 Code =1;//目标账号是否正确
+     int64 lUserScore = 2;//身上金币
+     int64 lUserInsure =3;//银行金币
+     string szDescribeString=4;//返回状态信息
+}
+
+//49.查询明细请求
+message UserBankDetailRequest{
+     string userid =1;//用户 I D
+     int32 cbTransferIn =2;//转账类型 转入:1、转出:0
+}
+
+message UserZengSongInfo{
+     string userid =1;//用户 I D
+     string szNickName = 2;
+     int64 lSwapScore =3;
+     string szDateTime =4;
+}
+
+//50.查询明细回复
+message UserBankDetailResponse{
+     int32 Code =1;//状态值 
+     int32 cbTransferIn =2;//转账类型 转入:1、转出:0
+     string szDescribeString =3;//返回状态信息
+    repeated UserZengSongInfo zengSongInfo =4;
+}
+
+
+/////////////////////////////////////////////////////////////////////
+//51.修改密码请求
+message ModifyPasswordRequest{
+	 string oldPassword = 1;	//旧密码
+	 string newPassword = 2;	//新密码
+	 string machineID = 3;		//机器码
+}
+
+//52.修改密码回复
+message ModifyPasswordResponse{
+	 int32 resultCode = 1;	//结果类型 0为成功， 1为用户不存在 ，2为已经封号 ， 3为密码错误，4更新数据库失败
+	 string resultDescription = 2;	   //结果描述
+
+}
+
+//53.修改个人信息请求
+message ModifyPersonalInformationRequest{
+	 string nickname = 1;	//昵称
+	 string idCard = 2;	//身份证
+	 string email = 3;	//email
+	 int32	sex   =4;	//性别
+}
+
+//54.修改个人信息回复
+message ModifyPersonalInformationResponse{
+	 int32 resultCode = 1;	//结果类型 0为成功， 1为数据库更新失败
+	 string resultDescription = 2;	   //结果描述
+}
+
+//55.手机平台更新请求
+message MobileCheckUpdateRequest{
+     int32 byPlazaType =1;//平台标识
+     int32 wAppVersion =2;//app版本号
+     int32 wKindid = 3;  //大厅版本
+     int32 wResVersion =4;//资源版本
+}
+
+//56.手机平台更新回复
+message MobileCheckUpdateResponse{
+     int32 Code =1;
+     int32 wStatus=2;
+     int32 wAppcheck=3;
+     string szUpdateUrl=4;
+     int64 appSize=5;
+     string appName=6;
+     string appMd5=7;
+     int64 resSize=8;
+     string resName=9;
+     string resMd5 =10;
+     string szDescribeString =11;
+}
+
+//57.win32 平台更新请求
+message PCCheckUpdateRequest{
+     int32 wAppVersion  =1;
+     int32 wResVersion  =2;
+}
+
+//58.win32 平台更新回复
+message PCCheckUpdateResponse{
+    int32 Code =1;
+    string szName =2;
+    string szMd5 =3;
+    int64 szSize =4;
+    string szDescribeString =5;
+}
+
+
+
+
+////////////////////////////////////////////////////////////////////////
+//70. 微信登录 
+message WxLoginRequest{
+      //系统信息
+   int32 dwLogonType = 1;     //登录类型(pc:3,ios
+   int32 dwClientVersion = 2; //客户端版本
+   string dwClientIP = 3;      //玩家IP
+   int32 dwPlazaVersion = 4;  //广场版本
+   string strOpenID  =5;      //openID
+   string szMachineID = 6;    //机器序列
+   string strwxNickName = 7;  //strwxNickName
+}
+
+//71.微信登录回复
+message WxLoginResponse{
+	enum WxLoginResponseCode{
+	    OK = 0;
+	    Forbidden = 1;
+	    NoSuchUserPass = 2;
+	    OldPlayerKicked = 3;
+	    CookieBad = 4;
+	}
+	 WxLoginResponseCode code =1;
+	 User user = 2;
+	 int32 signed = 3;
+	repeated string gameName = 4;
+}
+

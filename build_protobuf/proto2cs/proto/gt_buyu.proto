@@ -1,0 +1,363 @@
+/*
+二人牛牛
+code 900~999
+*/
+syntax = "proto3";
+package gt_msg;
+
+
+//5100 - 6000 游戏逻辑消息定义by whx
+
+message Vec2{
+	
+		float	x = 1;
+		float 	y = 2;
+}
+message Vec3{
+
+		float	x = 1;
+		float 	y = 2;
+ 		float 	z = 3;
+}
+message ColliderCircle{
+
+		Vec3	Offset = 1;
+		float 	Radius = 2;
+}
+message Quate{
+
+		float	x = 1;
+		float 	y = 2;
+		float 	z = 3;
+		float 	w = 4;
+
+}
+//一个点
+message PathPointClient{
+
+		Vec3	point = 1;//点
+}
+//一条路径
+message SinglePathClient{
+	
+ 		string		pathName = 1;//路径名字
+		repeated 	PathPointClient 	pathPointList = 2;//路径
+}
+//所有路径
+message PathGroupClient{
+	
+		repeated SinglePathClient pathList= 1;//路径集合
+}
+
+//一个点
+message PathPointServer{
+
+		Vec3	point = 1;//点
+	 	Vec3 	normalizedX = 2;//x轴单位向量
+	    Vec3	normalizedY = 3;//y轴单位向量
+		Vec3 	normalizedZ = 4;//z轴单位向量
+}
+//一条路径
+message SinglePathServer{
+	
+ 		string		pathName = 1;//路径名字
+		repeated 	PathPointServer 	pathPointList = 2;//路径
+}
+//所有路径
+message PathGroupServer{
+	
+		repeated SinglePathServer pathList= 1;//路径集合
+}
+
+//ai子弹路径
+message AIBulletPath{
+	
+// 		string		pathName = 1;//路径名字
+		repeated 	Vec2 	pathPointList = 2;//点列表
+}
+//ai子弹路径组
+message AIBulletPathGroup{
+//		string groupName = 1;//组名字
+		repeated AIBulletPath pathList= 2;//路径列表
+}
+//ai子弹存储组的集合
+message AIBulletPathSets{
+	
+	repeated AIBulletPathGroup groupList=1;//组列表
+}
+//路径存储(客户端)头信息
+message PathFileHead{
+		int32 count = 1;
+		repeated PathPosInfo pathPosInfo = 2;
+}
+//路径位置信息
+message PathPosInfo{
+		string pathName = 1;
+		int32 startPos = 2;
+		int32 length = 3;
+}
+//包含的项
+message ProductItemContent{
+		repeated	ProductItem	items = 1;//单个项集合
+		int32 		frame = 2;//起始帧数
+	 	string 		fishType = 3;//鱼名字
+}
+//产鱼单个项
+message ProductItem{
+		string		productName = 1;//路径名
+		int32    	time = 2;//循环次数
+		repeated 	ProductItemContent		contentItems = 3;//包含的项
+}
+//产鱼主列表
+message ProductItemGroup{
+	
+		repeated ProductItem itemList= 1;//单个项集合
+}
+
+message Record{
+		int32 	frame = 1;
+		GameConfig 	gameConfigMsg = 2;
+		EstablishFish 	establishFishMsg= 3;
+		CatchFish 	catchFishMsg = 4;
+		CreateBullet 	createBulletMsg = 5;
+		DestructBullet 	destructBulletMsg = 6;
+		AssignBulletId 	assignBulletIdMsg = 7;
+		FreezeFish 	freezeFishMsg = 8;
+}
+
+//鱼配置
+message FishConfig{
+
+	 int32 type = 1;
+	 string name = 2;
+	 float raduis = 3;
+	
+}
+message FishConfigList{
+
+	repeated FishConfig fishConfigs = 1;
+}
+message FishData{
+	
+		int32		fishKind = 1;
+		int32 		fishImportance = 2;
+	 	string 		fishModel = 3;
+	 	bool 		fishLockable = 4;
+	 	float 		fishAnimaScale = 5;
+	 	int32 		FishScore = 6;
+		repeated	string		fishDieEffect = 7;
+		repeated 	ColliderCircle 	colliders = 8;
+}
+
+message BulletData{
+		int32		type = 1;
+	 	string 		model = 2;
+		int32 		speed = 3;
+		float 		radius = 4;
+		string 		yuwangModel = 5;
+	    string      turretModel = 6; //炮台模型
+	    int32       multiple = 7;//子弹倍率
+
+	
+}
+message MagicData{
+		int32		type = 1;
+	 	string 		model = 2;
+	    int32       multiple = 7;//子弹倍率
+}
+
+message InstantData{
+	int32 type = 1;	//类型
+  	int32 multiple = 2;//倍数
+  	int32 speed = 3;
+   	string model = 4;//特性文件
+   	string effect = 5;
+    string discribe = 6;//描述
+
+}
+message FreezeData{
+	int32 frame =1;//执行帧
+	int32 duration = 2;//持续时间
+}
+message FastData{
+	int32 frame = 1;
+	float speed = 2;
+	int32 Duration = 3;
+}
+
+//5101.申请加入牌局
+message JoinFreeRequestfish3d {
+		string	userId = 1;			//玩家id
+		int32	tableId = 2 ;	//桌子号
+		int32	seatId = 3 ;	//椅子号
+}
+
+//5102.进入牌桌回复
+message JoinFreeResponsefish3d {
+		int32	resultCode = 1; //0成功， 1已在座位上， 2位置被占
+		int32	nowFrame = 2;//当前帧
+		int32	tableId = 3;//桌子号
+		int32	seatId = 4;//椅子号
+		bool	localCollision =5;//是否进行本地碰撞
+}
+//5110.请求记录
+message RecordRequestFish3D{
+	 string fname=1;
+}
+//5111.回复纪录
+message RecordResponseFish3D{
+	
+	 	int32 allFrame = 1;
+}
+//5112.记录包
+message RecordStore{
+	repeated Record list = 1;
+	 int32 allFrame=2;
+}
+
+//5120
+message GameConfig{
+	repeated Vec2 gunPos = 1;
+	repeated Vec2 turretPos = 2;
+	repeated FishData fishConfigs = 3;
+	repeated BulletData bulletConfigs = 4;
+	repeated InstantData instantConfigs = 5;
+	repeated MagicData magicConfigs = 6;
+}
+
+//5121.服务器当前帧数
+message CurrentFrame{
+		int32	frame = 1;//当前帧数
+}
+
+//5122.用户鱼币
+message FishCoin{
+	int32 seatId = 1;//座位号
+	int64 scoreNow = 2;//玩家当前分数
+}
+//5123.场景鱼消息
+message SceneFishs{
+	EstablishFish fishs=1;
+	repeated	FreezeData freeze=2;
+	repeated 	FastData fasts=3;
+
+}
+//5130.产生鱼的消息包
+message EstablishFish{
+		int32	fishId = 1;//鱼id
+		int32	fishType = 2;//鱼类型
+		string	pathName = 3;//鱼路径名
+		int32	frame = 4;//鱼的起始帧
+		bool	isRedFish = 5;//是否是红鱼
+}
+
+//5131.捕获鱼
+message CatchFish{
+		int32	seatId = 1 ;//座位号
+		int32	fishId=2;//鱼id
+		int32	frame = 3;//鱼消亡帧
+	 	int64 	fish_score = 4; //鱼分值
+		int32 	link_fish_id = 5; //连锁
+	    int64  	scoreNow = 6;//玩家当前分数
+		int32	dieType = 7; //死亡方式 1 正常被打死 2 爆炸而死 3 连锁而死
+}
+//5141.指定子弹id
+message AssignBulletId{
+		int32 bulletId = 1 ;
+}
+
+//5143.发射子弹请求
+message EstablishBulletRequest{
+		int32	bulletId = 1;//子弹id
+		int32	frame = 2;//子弹起始帧
+		int32   lockFishId = 3;//锁定鱼
+		Vec2 	terminal = 4;//目标位置
+	    int32   bulletType = 5;//发射的子弹类型
+	    int32	bulletSkill = 6;//子弹技能 0 普通子弹 1追踪弹 2瞬发弹
+
+}
+//5144.发射指弹回复
+message CreateBullet{
+
+		int32	seatId = 1 ;//作为好
+		int32	speed = 2;//速度
+		int32	frame = 3;// 子弹起始帧
+		int32	bulletId = 4 ;//子弹id
+		Vec2 	terminal = 5;//目标位置
+		int32	lockFishId = 6;//锁定鱼id
+	    int32   bulletType = 7;//发射的子弹配置表ID
+	    int64   scoreNow = 8;//玩家当前分数
+		int32	bulletSkill = 9;//子弹技能 0普通子弹 1追踪弹 2瞬发弹
+}
+
+//5145.销毁子弹
+message DestructBullet{
+		int32	bulletId=1;//子弹id
+		int32	frame = 2;//子弹消亡帧
+		int32   attackFish = 3;//子弹打中的鱼
+}
+
+//5150.冰冻鱼
+message FreezeFish{
+	int32	frame = 1;
+	int32 	duration = 2;
+	repeated int32 fishList = 3;
+	bool showEffect = 4;
+}
+//5151.快速逃离
+message FastEscape{
+	
+	int32 frame = 1;
+	float speed = 2;
+	int32 duration = 3;
+	repeated int32 fishList = 4;
+
+}
+//5160.退出请求
+message ForceExitTableRequestfish3d{
+}
+
+//5161.退出回复
+message ForceExitTableResponsefish3d{
+		int32	resultCode = 1;//退出结果代号
+}
+///////////////////////////////////////
+//机器人消息
+//5200.
+message FishInformationToAI{
+	int32 Frame = 1;
+	repeated  int32 AreasScore = 2;
+}
+//5201
+message RedFishAppear{
+	int32 fishId = 1;		
+}
+//5202
+message RedFishDisappear{
+	int32 fishId = 1;
+}
+//5203
+message BigFishAppear{
+	int32 fishId = 1;
+	int32 fishType = 2;
+
+}
+//5204
+message BigFishDisappear{
+	int32 fishId = 1;
+}
+//5205
+message AIHeartBeat{
+	
+}
+//测试
+//5300
+message FishTest{
+	int32 fishId = 1;
+	int32 fishType = 2;
+	Vec2 position = 3;
+}
+//5301
+message FishGroupTest{
+	repeated FishTest group = 1;
+}

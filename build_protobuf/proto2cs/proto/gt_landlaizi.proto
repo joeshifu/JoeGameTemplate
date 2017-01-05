@@ -1,0 +1,247 @@
+/*
+癞子斗地主
+code 3100~3200(不包含3200)
+*/
+syntax = "proto3";
+package gt_msg;
+
+//import "gt_base.proto";
+
+
+//3100.游戏状态，空闲
+message LandLaizi_MsgS_StatusFree
+{
+	 int64	llBaseScore = 1;					//基础积分
+	repeated int64	llTurnScore = 2;					//历史积分信息3
+	repeated int64	llCollectScore = 3;				//历史积分信息3
+};
+
+//3101.游戏状态，叫分
+message LandLaizi_MsgS_StatusScore
+{
+	 int32	nLandScore = 1;							//地主分数
+	 int64	llBaseScore = 2;							//基础积分
+	 int32	nCurrentUser = 3;						//当前玩家
+	repeated int32	nScoreInfo = 4;						//叫分信息3
+	repeated int32	nCardData = 5;					//手上扑克3x20(玩家0扑克+玩家1扑克+玩家2扑克) 
+	repeated bool	bUserTrustee = 6;			//玩家托管3
+	 int32	nBombTime = 7;							//倍数
+	repeated int32  nMingCardStatus = 8;		//明牌状态3
+	repeated int64	llTurnScore = 9;			//历史积分信息3
+	repeated int64	llCollectScore = 10;			//历史积分信息3
+};
+
+//3102.游戏状态，抢地主
+message LandLaizi_MsgS_StatusQiangLand
+{
+	 int64	llBaseScore = 1;							//基础积分
+	 int32	nCurrentUser = 2;						//当前玩家
+	repeated int32	nScoreInfo = 3;						//叫分信息3
+	repeated int32	nCardData = 4;					//手上扑克3x20(玩家0扑克+玩家1扑克+玩家2扑克) 
+	repeated bool	bUserTrustee = 5;			//玩家托管3
+	 int32	nBombTime = 6;							//倍数
+	repeated bool	bMingCard = 7;				//明牌用户3
+	repeated int32  nMingCardStatus = 8;		//明牌状态3
+	repeated int64	llTurnScore = 9;			//历史积分信息3
+	repeated int64	llCollectScore = 10;			//历史积分信息3
+};
+//3103.游戏状态，加倍
+message LandLaizi_MsgS_StatusAdd
+{
+	 int32	nLandUser = 1;							//坑主玩家
+	 int64	llBaseScore = 2;							//基础积分
+	 int32	nCurrentUser = 3;						//当前玩家
+	repeated int32	nScoreInfo = 4;						//叫分信息3
+	repeated int32	nCardData = 5;					//手上扑克3x20(玩家0扑克+玩家1扑克+玩家2扑克) 
+	repeated bool	bUserTrustee = 6;			//玩家托管3
+	 int32	nBombTime = 7;							//倍数
+	repeated bool	bMingCard = 8;				//明牌用户3
+	repeated bool	bAddScore = 9;				//加倍判断3
+	 int32	nLaiZiCard = 10;							//赖子
+	repeated int32  nMingCardStatus = 11;		//名牌状态3
+	repeated int64	llTurnScore = 12;			//历史积分信息3
+	repeated int64	llCollectScore = 13;			//历史积分信息3
+};
+//3104.游戏状态，出牌
+message LandLaizi_MsgS_StatusPlay
+{
+	 int32	nLandUser = 1;							//坑主玩家
+	 int32	nBombTime = 2;							//倍数
+	 int64	llBaseScore = 3;							//基础积分
+	 int32	nLandScore = 4;							//地主分数
+	 int32	nLastOutUser = 5;						//出牌的人
+	 int32	nCurrentUser = 6;						//当前玩家
+	repeated int32	nBackCard = 7;						//底牌扑克3
+	repeated int32	nCardData = 8;					//手上扑克3x20(玩家0扑克+玩家1扑克+玩家2扑克) 
+	repeated int32	nCardCount = 9;						//扑克数目3
+	 int32	nTurnCardCount = 10;						//基础出牌
+	repeated int32	nTurnCardData = 11;					//出牌列表20
+	repeated bool	bUserTrustee = 12;			//玩家托管3
+	 int32	nLaiZiCard = 13;							//赖子牌
+	repeated int32  nMingCardStatus = 14;		//明牌状态3
+	repeated int64	llTurnScore = 15;			//历史积分信息3
+	repeated int64	llCollectScore = 16;			//历史积分信息3	
+	int32 nCardType = 17;							//牌型
+	int64 llTypeValue = 18;							//权值大小	
+	repeated int32	nChangeCardData = 19;					//出牌列表20(变牌)
+};
+
+//3105.发送扑克
+message LandLaizi_MsgS_SendCard
+{
+	 int32	nCurrentUser = 1;						//当前玩家
+	repeated int32	nCardData = 2;						//扑克列表17
+};
+
+//3106.发送扑克
+message LandLaizi_MsgS_SendAllCard
+{
+	repeated int32	nMingCard = 1;				//明牌信息3
+	 int32	nCurrentUser = 2;						//当前玩家
+	repeated int32	nCardData = 3;			//扑克列表3x20(玩家0扑克+玩家1扑克+玩家2扑克，没家17张) 
+	repeated int32	nBackCardData = 4;					//底牌扑克3
+	 int32	nLaiZiCard = 5;							//赖子牌
+	 int32	nBombTime = 6;							//倍数
+	int64 llBaseScore = 7;						//底分			
+};
+
+//3107.用户叫分
+message LandLaizi_MsgS_LandScore
+{
+	 int32	nLandUser = 1;							//叫分玩家
+	 int32	nCurrentUser = 2;						//当前玩家
+	 int32	nLandScore = 3;							//上次叫分
+	 int32	nCurrentScore = 4;						//当前叫分
+};
+
+//3108.游戏开始
+message LandLaizi_MsgS_GameStart
+{
+	repeated bool	bAddScore = 1;				//加倍判断3
+	 bool	bIsAdd = 2;								//是否加倍
+	 int32	nLandUser = 3;							//地主玩家
+	 int32	nLandScore = 4;							//地主分数
+	 int32	nCurrentUser = 5;						//当前玩家
+	repeated int32	nBackCard = 6;						//底牌扑克3
+	 int32	nBombTime = 7;							//倍数	
+};
+
+//3109.用户出牌
+message LandLaizi_MsgS_OutCard
+{
+	 int32	nCardCount = 1;							//出牌数目
+	 int32	nCurrentUser = 2;						//当前玩家
+	 int32	nOutCardUser = 3;						//出牌玩家
+	repeated int32	nCardData = 4;						//扑克列表20
+	repeated int32	nChangeCardData = 5;					//变后牌20	
+	int32 nCardType = 6;							//牌型
+	int64 llTypeValue = 7;							//权值大小
+};
+
+//3110.放弃出牌
+message LandLaizi_MsgS_PassCard
+{
+	 int32	nNewTurn = 1;							//一轮开始
+	 int32	nPassUser = 2;							//放弃玩家
+	 int32	nCurrentUser = 3;						//当前玩家
+};
+
+//3111.游戏结束
+message LandLaizi_MsgS_GameEnd
+{
+	 int64	llGameTax = 1;							//游戏税收
+	repeated int64	llGameScore = 2;						//游戏积分3
+	repeated int32	nCardCount = 3;						//扑克数目3
+	repeated int32	nCardData = 4;						//扑克列表54(玩家0扑克+玩家1扑克+玩家2扑克) 
+	repeated int32	nUserAdd = 5;				//用户加倍3
+	repeated int32	nOtherAdd = 6;						//5种加倍:[0]总的倍数, [1]明牌选择的倍数：开始5倍，发牌过程中4倍，打牌明牌2倍,  [2]抢地主倍数, [3] 炸弹倍数, [4]春天或反春天
+	repeated int32	nPlayTime = 7;				//局数3
+	repeated int64	llGameResult = 8;			//历史成绩3
+};
+//3112.明牌
+message LandLaizi_MsgS_MingCard
+{
+	 int32	nMingUser = 1;							//明牌用户
+	 int32	nMingCardStatus = 2;							//明牌状态
+	 int32	nBombTime = 3;							//倍数
+};
+//3113.抢地主
+message LandLaizi_MsgS_QiangLand
+{
+	 int32	nQiangLand = 1;							//nQiangUser是否已抢地主(0不抢，非0抢)，nQiangUser无效则nQiangLand无效
+	 int32	nQiangUser = 2;							//已抢地主用户(0,1,2有效，其他无效)
+	 int32  nCurrentUser = 3;						//当前抢地主玩家(0,1,2有效，其他无效)
+	 int32	nBombTime = 4;							//当前倍数 
+};
+//3114.加倍
+message LandLaizi_MsgS_Add
+{
+	 bool	bAdd = 1;							//加倍
+	 bool	bIsAdd = 2;							//加倍判断
+	 int32	nAddUser = 3;						//加倍用户
+	 int32	nCurrentUser = 4;					//当前用户
+};
+
+//3115.托管结构
+message LandLaizi_MsgS_UserTrustee 
+{
+	 int32	nUserChairID = 1;						//玩家椅子
+	 bool	bTrustee = 2;							//托管标识
+};
+
+/////////////////////////////////////////////////////
+//客户端
+//3130.机器人代打
+message LandLaizi_MsgC_Robot
+{
+	 int32	nChairID = 1;						// 机器人座位号	
+};
+
+//3131.托管结构
+message LandLaizi_MsgC_UserTrustee 
+{
+	 int32	nUserChairID = 1;						//玩家椅子
+	 bool	bTrustee = 2;							//托管标识
+};
+
+//3132.用户叫分
+message LandLaizi_MsgC_LandScore
+{
+	 int32	nLandScore = 1;							//地主分数
+};
+
+//3133.出牌数据包
+message LandLaizi_MsgC_OutCard
+{
+	 int32	nCardCount = 1;							//出牌数目
+	repeated int32	nCardData = 2;						//扑克列表20
+	repeated int32	nChangeCard = 3;					//变后牌20	
+	int32 nCardType = 4;							//牌型
+	int64 llTypeValue = 5;							//权值大小
+};
+//3134.不出
+message LandLaizi_MsgC_PassCard
+{
+	 int32	nChairID = 1;						// 座位号	
+};
+//3135.明牌开始
+message LandLaizi_MsgC_MingState
+{
+	 int32	nUserChairID = 1;						//玩家椅子
+	 int32	nMingState = 2;							//明牌状态 游戏还没开始时5倍:1,发牌时4倍:2, 出牌时2倍:3
+};
+//3136.抢地主
+message LandLaizi_MsgC_QiangLand
+{
+	 bool	bQiangLand = 1;						//抢地主
+};
+//3137.出牌明牌
+message LandLaizi_MsgC_MingOut
+{
+	 bool	bMingOut = 1;						//出牌明牌
+};
+//3138.加倍
+message LandLaizi_MsgC_Add
+{
+	 bool	bAdd = 1;						//加倍
+};

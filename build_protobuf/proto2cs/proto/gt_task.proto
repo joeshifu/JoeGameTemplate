@@ -1,0 +1,405 @@
+/*
+任务系统 和 签到系统
+code 8000~9000
+*/
+syntax = "proto3";
+package gt_msg;
+
+/*  json结构体  任务列表
+type TasksList struct {
+  Task_id           int    `json:"Task_id"`           // 任务标识
+  Task_name         string `json:"Task_name"`         // 任务名称
+  Task_info         string `json:"Task_info"`         // 任务描述
+  Task_target       int    `json:"Task_target"`       //任务目标
+  Task_reward       int    `json:"Task_reward"`       //任务奖励
+  Task_liveness     int    `json:"Task_liveness"`     //活跃度奖励
+  Task_reward_id    int    `json:"Task_reward_id"`    //任务奖励类型
+  Task_progress     int    `json:"Task_progress"`     //当前任务的进度
+  Task_finish       int    `json:"Task_finish"`       //当前任务是否完成  1 完成   2 未完成
+  Task_kindid       int32  `json:"Task_kindid"`       //区分是哪个游戏的任务
+  Task_liveness_con int    `json:"Task_liveness_con"` //区分是不是需要达到一定活跃度值才能开启的任务，>0的是，其它则不是
+}
+
+//各阶段奖励
+type LivenessAward struct {
+  Liveness_reward_id int    `json:"Liveness_reward_id"` //活跃度奖励类型 1是欢乐豆 2是钻石 3是体验币 4是其他
+  Liveness_reward    int    `json:"Liveness_reward"`    //活跃度奖励
+  Liveness_info      string `json:"Liveness_info"`      //奖励描述
+}
+
+//活跃度信息 
+type LivenessInfo struct {
+  Liveness_id     int             `json:"Liveness_id"`     //活跃度id
+  Liveness_name   string          `json:"Liveness_name"`   //活跃度名称
+  Liveness_target int             `json:"Liveness_target"` //活跃度目标  达成条件
+  Liveness_reward []LivenessAward  //任务的奖励
+}
+
+//用户自己的活跃度状态 
+type LivenessStutas struct {
+  Liveness_id     int             `json:"Liveness_id"`     //活跃度id
+  Liveness_finish   int          `json:"Liveness_finish"`   //活跃度是否领取，0 没有，1 有
+}
+
+// 自己每个任务的当前进度
+type TaskProgress struct{
+    Task_finish int
+     Task_id int
+     Task_progress int
+}
+
+
+// 金币和钻石商店
+type ShopCoin struct {
+  Card_id    int32   `json:"Card_id"`    //'商品id',
+  Card_name  string  `json:"Card_name"`  //'商品名',
+  Card_price int32 `json:"Card_price"` //'商品价格',
+  Card_gold  int32   `json:"Card_gold"`  //'商品增加欢乐豆'
+}
+
+// 道具商店
+type ShopProps struct {
+  Prop_id       int32   `json:"Prop_id"`       //'商品id',
+  Prop_name     string  `json:"Prop_name"`     //'商品名',
+  Prop_price    float32 `json:"Prop_price"`    //'商品价格',
+  Prop_gold     int32   `json:"Prop_gold"`     //'商品增加欢乐豆'
+  Prop_days     int32   `json:"Prop_days"`     //'生效天数',
+  Prop_day_back int32   `json:"Prop_day_back"` //'每日返利',
+  Prop_info     string  `json:"Prop_info"`     //'描述信息'
+}
+
+// vip商店
+type ShopVip struct {
+  Vip_id        int32   `json:"Vip_id"`        //''会员id',
+  Vip_name      string  `json:"Vip_name"`      //''会员名',
+  Vip_price     float32 `json:"Vip_price"`     //'会员价格',
+  Vip_gold      int32   `json:"Vip_gold"`      //'商品增加欢乐豆'
+  Vip_free_sign int32   `json:"Vip_free_sign"` //'免费补签次数',
+  Vip_day_back  int32   `json:"Vip_day_back"`  //'每日返利',
+  Vip_speed_up  int32   `json:"Vip_speed_up"`  //'等级加速数'
+}
+
+// 我的道具
+type MyProps struct {
+  Prop_id  int32 `json:"Prop_id"`  //道具ID
+  Prop_num int32 `json:"Prop_num"` //道具个数
+}
+
+//在使用中的道具
+type UsingProps struct {
+  Prop_id   int32 `json:"Prop_id"`   //道具ID
+  Dead_line int64 `json:"Dead_line"` //到期时间
+}
+*/
+
+ // 8000 请求任务  暂时默认打开任务是显示每日任务和活跃度
+ message TaskRequest{
+       int32 taskType =1; //1是每日 2是每周 3是每月 4是成长
+       int32 kindId=2;// 游戏kindid
+	     string userId =3;//用户userid
+ }
+
+ // 8001 任务回复
+ message TaskResponse{
+ 	     int32 taskCount =1; //当前任务总数
+       repeated string taskListInfo =2; //任务信息
+       repeated string myTaskProgress = 3;//自己每个任务的当前进度
+       repeated string livenessInfo =4; //活跃度信息
+       repeated string livenessStutas =5;//每个活跃度的领取状态  0 没有领取 1 领取
+       int32 myLivenessProgress =6;//当前自己活跃度的进度
+       int32 taskType =7; //1是每日 2是每周 3是每月 4是成长 
+       int32 code =8;//返回 状态码
+       string szDescription =9;//返回消息描述
+ }
+
+// 活跃度奖励的物品
+ message LiveneAward{
+    int32 liveneId =1;//活跃度ID
+   repeated  int32 awardId = 2;//奖励类型id 1是欢乐豆 2是钻石 3是体验币
+   repeated string awardInfo =3;//物品描述
+   repeated int32  awardCount =4;//奖励数量
+    int32 finish =5;//1 代表这个完成是指已领取的 其它是没有完成
+    int32 progress =6;//当前活跃度进度
+ }
+ 
+ // 8003 完成任务请求
+ message TaskFinishRequest{
+    int32 taskType =1;//1是每日 2是每周 3是每月 4是成长  
+    int32 taskId =2;//任务id
+    int32 kindId =3;// 游戏kindId  0是大厅  
+	  string userId =4;//用户userid
+ }
+
+ // 8004 完成日常任务回复
+ message TaskFinishResponse{
+    int32 taskId =1;
+    string awardInfo =2;//任务奖励信息
+    int32 code =3; //非0 都是失败
+    string szDescription =4;//返回信息描述
+    int32 taskType = 5;//1是每日 2是每周 3是每月 4是成长 
+ }
+
+ //8005 完成活跃度任务请求
+ message TaskLiveneFinishRequest{
+ 	int32 taskId =1;//任务id    暂时传20，40，60，80，100
+ 	int32 kindId =2;// 游戏kindId  0是大厅
+	string userId =3;//用户userid
+ }
+
+// 8006 完成活跃度任务回复
+message TaskLiveneFinishResponse{
+  int32 livenessId =1;
+	repeated string award =2;//活跃度奖励
+	int32 code =3; //非0 都是失败
+  string szDescription =4;//返回信息描述
+}
+
+// 8007 签到信息请求
+message TaskCheckInRequest{
+  string userId =1;
+  int32 kindId =2;
+}
+
+//连续签到后获得的奖励信息
+message  ConsecutiveCheckIns{
+    string awardInfo =1;//奖励信息
+    string awardName =2;//奖励名字
+    int32 awardId =3;//物品id
+    int32 checksInId =4;//领取礼包的id
+    int32 awardCoin =5;// 奖励的欢乐豆
+}
+
+// 8008 签到信息回复
+message TaskCheckInRepsonse{
+  int64 currData =1;//当前时间
+  string currAwardInfo =2;//当前奖励信息
+  int32 checkInsNum =3;//最高连续签到次数
+  string  checkInList =4;//签过的时间
+  string  receiveList =5;//领取成功连续签到的时间
+  repeated ConsecutiveCheckIns checkIns =6;//连续签到的奖励
+  int32 code =7; //非0 都是失败
+  string szDescription =8;//返回信息描述
+  int32  freeCheckInsTimes =9;//还剩下免费签到次数
+}
+
+// 8009 领取签到奖励请求
+message TaskCheckInsFinishRequest{
+  int32 days = 1;
+  int32 checkInsType =2;//1 每天签到的奖励，(7,10,15,21,30,连续签到的奖励)
+  string userId = 3;
+  int32 kindId =4;
+}
+
+// 8010 领取签到奖励回复
+message TaskCheckInsFinishRepsonse{
+   int32 code =1; //非0 都是失败
+   string szDescription =2;//返回信息描述
+    ConsecutiveCheckIns checkIns =3;//签到的奖励
+    int32 checkInsType =4;//1代表每日签到，其它暂时表示连续签到的奖励礼包 
+    int64 userScore = 5;//用户身上的钱
+    int64 userDiamond =6;// 用户身上的钻石
+    int32 lianxuDays =7;//最高连续签到的天数
+}
+
+
+//8011 金币和钻石商店请求
+message ShopRequest{
+  string userid =1;
+  int32 shopType=2;// 1 金币商店，2 钻石商店, 3 道具商店，4 vip商店 ，5 我的道具
+}
+
+//8012 金币商店回复
+message ShopCoinRepsonse{
+  int32 shopType=1; 
+  repeated string coin =2;
+  int64 userScore =3;//用户银行的钱
+  int64  userDiamond =4;//用户身上的钻石数
+}
+
+//8013 钻石商店回复
+message ShopDiamondRepsonse{
+  int32 shopType=1; 
+  repeated string coin =2;
+}
+
+//8014 道具商店回复
+message ShopPropsRepsonse{
+  int32 shopType=1; 
+  repeated string props =2;
+}
+
+//8015 vip商店回复
+message ShopVipRepsonse{
+  int32 shopType=1; 
+  repeated string vip =2;//vip内容描述信息
+  string vipName =3;//用户当前的等级名称
+  int32  vipTime =4;//剩余时间 天数
+}
+
+/*
+// 我的道具信息
+type MyShopProps struct {
+  Prop_id   int32  `json:"Prop_id"`   //'商品id',
+  Prop_name string `json:"Prop_name"` //'商品名',
+  Prop_days int64  `json:"Prop_days"` //到期时间   除了喇叭和房卡 之外 (这两个显示个数)，显示到期时间戳
+  Prop_info string `json:"Prop_info"` //'描述信息'
+  Prop_num  int32  `json:"Prop_num"`  // 道具的数量    目前只有 喇叭和房卡 有个数，其它的都是买了立即生效
+  Prop_time  string `json:"Prop_time"` //字符串时间，这个只返回 年月日
+}
+*/
+
+// 8016 我的道具信息回复
+message ShopMyPropsRepsonse{
+  int32 shopType=1; 
+  repeated string myProps =2;//所有道具  是一个json数组
+}
+
+// 8017 使用道具请求
+message ShopUsingPropsRequest{
+  string userid =1;
+  int32 prop_id =2;//道具id
+  int32 shopType =3;
+}
+
+// 8018 使用道具回复
+message ShopUsingPropsRepsonse{
+  int32 code =1;//非0 都是失败
+  int32 Prop_id =2;  //道具ID
+  int64 Dead_line =3;  //到期时间
+  string szDescription =4;//返回信息描述
+  int32 shopType =5;
+}
+
+// 8019 用钻石兑换金币 
+message ShopGoldWithDiamondRequest{
+  string userid =1;
+  int32  coin_id =2;//金币id
+  int32  coinNum = 3;//能换多少金币
+  int32  diamondNum =4;//需要的钻石个数
+  int32  shopType =5;
+  int32 kindId =6;//游戏id 0 代表大厅平台，其它的单独app 写游戏的kindid
+}
+
+// 8020 兑换金币回复 
+message ShopGoldWithDiamondResponse{
+  int32 shopType =1;
+  int32 coin_id =2;//金币id
+  int32 code =3;//是否成功，非0 都是失败
+  string szDescription =4;//返回信息描述
+  int64 userScore =5;//用户银行的钱
+  int64  userDiamond =6;//用户身上的钻石数
+}
+
+// 8021 测试用的充值请求  测试时用的
+message ShopRechargeRequest{
+  string userid =1;
+  int32 shopType =2;
+  int32  cardid =3;//物品Id
+}
+
+// 8022 充值成功的回复
+message ShopRechargeSuccess{
+  int32 shopType =1;
+  int32 cardid =2;//物品id
+  int64 userScore =3;//用户银行的钱
+  int64  userDiamond =4;//用户身上的钻石数
+  string vipName =5;//用户当前的等级名称  购买vip时返回的
+  int32  vipTime =6;//剩余时间 天数
+  string szDescription = 7;//返回信息描述
+}
+
+// 8023 补签请求
+message SupplementRequest{
+  string userid = 1;
+  int32 kindId =2;
+  int32  checkInsDay =3;//补签的时间
+}
+
+// 8024 补签回复
+message SupplementResponse{
+  int32 code =1;//0 成功 其它失败
+  string szDescription=2;//返回信息描述
+  int64  userScore =3;//用户银行的钱
+  int64  userDiamond =4;//用户身上的钻石数
+  int32  freeCheckInsTimes =5;//还剩下免费签到次数
+  int32  receiveCoin =6;//补签送的欢乐否数量
+  int32  checkInsNum =7;//连续签到的天数
+}
+
+// *********************************************排行榜*********************************************
+/*type UserRankInfo struct {
+  VipLevel  int    `json:"VipLevel"`  // 20 伯爵 21 候爵 22 公爵 0 代表没有会员
+  NickName  string `json:"NickName"`  //用户昵称
+  UserScore int64  `json:"UserScore"` //用户欢乐豆
+}*/
+
+// 8025 排行榜
+message RankBoardRequest{
+  string userId =1;
+  int32 kindId=2;// 0 大厅版本  其它则是单独app的游戏kindid
+  int32 rankType =3; // 1 充值排行榜  2 财富榜 默认充值榜
+} 
+
+// 8026 排行榜回复
+message RankBoardResponse{
+  int32 rankType =1; // 1 充值排行榜  2 财富榜 默认充值榜
+  int32 currRanking =2; //当前排名  0时则显示 暂未上榜
+  int64 scoreInfo=3;//你的信息在充值排行榜，显示充值的累积的欢乐豆，在财富榜显示你拥有的欢乐豆
+  repeated string myRankInfo =4;//返回的是json 结构在上面注释里 UserRankInfo
+}
+
+//***************************活动**************************
+//累积充值奖励
+// 8027 累积充值 活动中的
+message ActRechargeRequest{
+  int32 activiteType =1;//活动类型 1 累计充值
+   string userId=2;
+   int32 kindId=3;//0 大厅版本  其它则是单独app的游戏kindid
+}
+
+message ActiviteAward{
+  int32 awardCount =1;//奖励的数量
+  int32 awardId =2;//奖励的类型  1 欢乐豆 2 钻石
+}
+
+message ActiviteContent{
+  int32 currentNum =1;//当前充值的总数
+  int32 targetNum =2;//目标总数
+  int32 isReceive =3;//是否领取 0 代表没有领取 1 代表领取
+  repeated ActiviteAward award=4;//奖励信息
+  int32 achievementId =5;//达到目标的id 目前是 1 代表30元 2 90 3 180 4 360
+}
+
+//8028 累积充分 回复
+message ActRechargeResponse{
+  int32 activiteType =1;//活动类型 1 累计充值
+  repeated ActiviteContent content=2;//活动内容
+  bool isExpire =3;//活动是否到期 false 没有 true 到期了
+  int32 code =4;//0 成功，其它 失败
+  string szDescription = 5;//返回信息描述
+  int64 startTime =6;//活动开始时间
+  int64 endTime =7;//活动结束时间
+}
+
+// 8029 领取奖励请求
+message ActReceiveRequest{
+  string userId=1;
+  int32 kindId=2;
+  int32 activiteType =3;//活动类型 1 累计充值
+  int32 achievementId =4;//达到目标的id 目前是 1 代表30元 2 90 3 180 4 360 对应的id服务器会下发 
+}
+
+// 8030 领取奖励回复
+message ActReceiveResponse{
+  int32 activiteType =1;//活动类型 1 累计充值
+  int32 achievementId =2;//达到目标的id 目前是 1 代表30元 2 90 3 180 4 360 对应的id服务器会下发
+  int32 code =3;//0 成功，其它 失败
+  string szDescription = 4;//返回信息描述
+  repeated ActiviteAward award=5;//奖励信息
+  int64 userScore = 6;//用户的欢乐豆
+  int64 userDiamond =7;//用户的钻石数
+}
+
+
+
+

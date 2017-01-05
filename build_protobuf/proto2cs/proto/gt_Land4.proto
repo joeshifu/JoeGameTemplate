@@ -1,0 +1,149 @@
+/*
+四人斗地主
+code 3500-3600
+*/
+syntax = "proto3";
+package gt_msg;
+
+//import "gt_base.proto";
+
+//3500 - 3600 游戏逻辑消息定义 @mp
+
+//3500 游戏状态 
+message Land4_S_StatusFree{
+    int64 lBaseScore = 1;//基础积分
+	//历史积分
+    repeated int64 lTurnScore = 2;//积分信息
+    repeated int64 lCollectScore= 3;//积分信息
+}
+
+//3501 游戏状态
+message Land4_S_StatusScore{
+	int32 bLandScore = 1;//地主分数
+	int64 lBaseScore = 2;//基础积分
+	int32 wCurrentUser = 3;//当前玩家
+	repeated int32 bScoreInfo = 4;//叫分信息
+	repeated int32 bCardData = 5;//手上扑克
+	repeated bool bUserTrustee = 6;//玩家托管
+	//历史积分
+	repeated int64 lTurnScore = 7;//积分信息
+	repeated int64 lCollectScore = 8;//积分信息
+}
+
+//3502 游戏状态
+message Land4_S_StatusPlay{
+	int32 wLandUser = 1;//坑主玩家
+	int32 wBombTime = 2;//炸弹倍数
+	int64 lBaseScore = 3;//基础积分
+	int32 bLandScore = 4;//地主分数
+	int32 wLastOutUser = 5;//出牌的人
+	int32 wCurrentUser = 6;//当前玩家
+	repeated int32 bBackCard = 7;//底牌扑克
+	repeated int32 bCardData = 8;//手上扑克
+	repeated int32 bCardCount = 9;//扑克数目
+	int32 bTurnCardCount = 10;//基础出牌
+	repeated int32 bTurnCardData = 11;//出牌列表
+	repeated int32 cbMagicCardData = 12;//变幻扑克
+	repeated bool bUserTrustee = 13;//玩家托管
+		
+	//历史积分
+	repeated int64 lTurnScore = 14;//积分信息
+	repeated int64 lCollectScore = 15;//积分信息
+}
+
+//3503 发送扑克
+message Land4_S_SendCard{
+	int32 wCurrentUser = 1;//当前玩家
+	repeated int32 bCardData = 2;//扑克列表
+}
+
+//3504 发送扑克
+message Land4_S_SendAllCard
+{
+	int32 wCurrentUser = 1;//当前玩家
+	repeated Land4_CardData bCardData = 2;//扑克列表
+	repeated int32 bBackCardData = 3;//底牌扑克
+}
+message Land4_CardData{
+	repeated int32 HandCardData = 1;
+}
+
+//3505 用户叫分
+message Land4_S_LandScore{
+	int32 bLandUser = 1;//叫分玩家
+	int32 wCurrentUser = 2;//当前玩家
+	int32 bLandScore = 3;//上次叫分
+	int32 bCurrentScore = 4;//当前叫分
+}
+
+//3506 游戏开始
+message Land4_S_GameStart{
+	int32 wLandUser = 1;//地主玩家
+	int32 bLandScore = 2;//地主分数
+	int32 wCurrentUser = 3;//当前玩家
+	repeated int32 bBackCard = 4;//底牌扑克
+}
+
+//3507 用户出牌
+message Land4_S_OutCard{
+	int32 bCardCount = 1;//出牌数目
+	int32 wCurrentUser = 2;//当前玩家
+	int32 wOutCardUser = 3;//出牌玩家
+	repeated int32 bCardData = 4;//扑克列表
+}
+
+//3508 放弃出牌
+message Land4_S_PassCard{
+	int32 bNewTurn = 1;//一轮开始
+	int32 wPassUser = 2;//放弃玩家
+	int32 wCurrentUser = 3;//当前玩家
+}
+
+//3509 游戏结束
+message Land4_S_GameEnd{
+	int64 lGameTax = 1;//游戏税收
+	repeated int64 lGameScore = 2;//游戏积分
+	repeated int32 bCardCount = 3;//扑克数目
+	repeated int32 bCardData = 4;//扑克列表 
+}
+
+//////////////////////////////////////////////////////////////////////////
+//客户端命令结构
+
+
+//3510 托管结构
+message Land4_C_UserTrustee{
+	int32 wUserChairID = 1;//玩家椅子
+	bool bTrustee = 2;//托管标识
+}
+
+//3511 用户叫分
+message Land4_C_LandScore{
+	int32 bLandScore = 1;//地主分数
+}
+
+//3512 用户放弃
+message Land4_C_PASS_CARD{	
+}
+
+//3513 出牌数据包
+message Land4_C_OutCard{
+	int32 bCardCount = 1;//出牌数目
+	repeated int32 bCardData = 2;//扑克列表
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

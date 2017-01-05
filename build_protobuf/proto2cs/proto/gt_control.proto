@@ -1,0 +1,269 @@
+/*
+控制消息
+code 10000~10200
+*/
+syntax = "proto3";
+package gt_msg;
+//import "gt_base.proto";
+
+//捕鱼配置信息
+message TagFishingManageInfo{
+		int64		llKeyIndex=1;
+		int32		nGameID=2;							//玩家ID(整体库存时未用)
+		int32		nManageType=3;						//配置类型-1,0,1(负收分、0无作用、正送分)
+		int64		llManageScore=4;					//配置分数(非负值，配置类型nManageType为0时该值不起作用)
+		int64		llManageScoreCash=5;				//配置分数(非负值，配置类型nManageType为0时该值不起作用)
+		int64		llManageNodeScore=6;				//配置分数(获取con服务器配置时用到)
+		int32		nManageRate=7;						//收送分几率(非负值，1000为底)
+		int32		nStartDate=8;						//开始日期20150425
+		int32		nStartTime=9;						//开始时间160340
+		int32		nEndDate=10;						//结束日期20150425
+		int32		nEndTime=11;						//结束时间160340
+}
+
+// 10000.控制账号登陆请求
+message MsgcControlLoginRequest{
+	 string		szAccounts         = 1;
+	 string		szPassword         = 2;
+	 string		szUid              = 3;
+	 string		szMachineID      = 4;
+	 string		szClientIP       = 5;
+}
+
+// 10001.捕鱼配置送收分消息
+message MsgcFishingManageSetting{
+		int32		nOperateType = 1;					//0x00更新全部库存,0x01增加库存，0x10更新全部玩家,0x11增加玩家,0x12删除玩家
+		int32		nManageCount = 2;					//配置条数
+	repeated	TagFishingManageInfo arrManageSetting = 3;		//捕鱼配置信息
+};
+
+// 10002.svr返回捕鱼配置消息
+message MsgsFishingManageSettingResult{
+		int32		nOperateType = 1;					//0x00更新全部库存,0x01增加库存，0x10更新全部玩家,0x11增加玩家
+		string		szMessage = 2;						//结果信息
+	repeated	TagFishingManageInfo arrManageSetting = 3;		//捕鱼配置信息
+};
+
+// 10003.获取捕鱼配置信息
+message MsgcGetFishingManageInfo{
+		int32		nOperateType=1;							//<0x10获取库存，>=0x10获取玩家
+};
+
+//10004.cli修减玩家库存
+message MsgcFishingManageRevenue {
+	bool			bSetStockMark = 1;						//是否设置分级库存，llRevenue区分大小玩家
+	int32			nStockIndex = 2;						//分级库存索引
+	int64			llRevenue = 3;							//<=0获取库存，>0减去库存
+};
+
+//10005.svr修减玩家库存消息
+message MsgsFishingGameMessage {
+	string		 szMessage = 1;
+};
+
+//10006、cli个人控制结构图
+message  MsgcWriteControlServer{
+	string			szMobOdds = 1;							//手机控制概率
+	string			szMobflag = 2;							//手机控制类型
+	string			szPcOdds = 3;							//pc控制概率
+	string			szPcflag = 4;							//pc控制类型
+	int32			nConType = 5;
+	int32			nServerId = 6;
+};
+
+//10007.svr个人控制结构图
+message MsgsUpdataControlServer{
+	string			szMobOdds = 1;//手机控制概率
+	string			szMobflag = 2;//手机控制类型
+	string			szPcOdds = 3;//pc控制概率
+	string			szPcflag = 4;//pc控制类型
+	int32			nConType = 5;
+	int32			nKind = 6;
+	int32			nRoomID = 7;
+	int32			nCount = 8;//保存的数据条数
+};
+
+//10008.cli个人控制结构图
+message  MsgcUserControlXmsCon {
+	string			szSubID = 1;//人的游戏ID
+	string			szSubFlag = 2;//控制类型(0,1,2),1输，2赢
+	string			szSubOdds = 3;//控制几率
+	string			szSubGold = 4;//金币上限
+	string			szSubAllJu = 5;//金币最后赢的总和
+	int32			nRoomID = 6;
+	int32			nAllRoom = 7;
+	string			szSubWinLv = 8;//赢等级
+	string			szSubLostLv = 9;//输等级
+};
+
+//10009.svr个人控制结构图
+message  MsgsWriteControlServer {
+	repeated	string			szMobOdds = 1;//手机控制概率
+	repeated	string			szMobflag = 2;//手机控制类型
+	repeated	string			szPcOdds = 3;//pc控制概率
+	repeated	string			szPcflag = 4;//pc控制类型
+	repeated	int32			nConType = 5;
+	repeated	int32			nKind = 6;
+	repeated	int32			nRoomID = 7;
+	repeated	int64	        llServerStort = 8;
+	repeated	int64	        llServerStortLv1 = 9;
+	repeated	int64	        llServerStortLv2 = 10;
+	repeated	int64	        llServerStortLv3 = 11;
+	repeated	int64	        llServerStortLv4 = 12;
+	repeated	int64	        llServerStortLv5 = 13;
+	repeated	int64	        llleast = 14;
+	repeated	int32			nCount = 15;//保存的数据条数
+};
+
+//10010.svr个人控制结构图
+message  MsgsWriteControlUser {
+	repeated	string			szSubID = 1;//人的游戏ID
+	repeated	string			szSubFlag = 2;//控制类型(0,1,2)
+	repeated	string			szSubOdds = 3;//控制几率
+	repeated	string			szSubGold = 4;//金币上限
+	repeated	string			szSubChanGold = 5;//金币上限
+	repeated	string			szSubTodayInGold = 6;//金币上限
+	repeated	string			szSubAllChanGold = 7;//金币上限
+	repeated	string			szSubAllJu = 8;//金币最后赢的总和
+	repeated	int32			nRoomID = 9;
+	repeated	string			szSubWinLv = 10;//赢等级
+	repeated	string			szSubLostLv = 11;//输等级
+	repeated	int32			nCount = 12;//保存的数据条数
+};
+
+//10011.svr个人控制结构图
+message  MsgsWriteControlUpUser {
+	repeated	string			szSubID = 1;//人的游戏ID
+	repeated	string			szSubFlag = 2;//控制类型(0,1,2)
+	repeated	string			szSubOdds = 3;//控制几率
+	repeated	string			szSubGold = 4;//金币上限
+	repeated	string			szSubChanGold = 5;//金币上限
+	repeated	string			szSubTodayInGold = 6;//金币上限
+	repeated	string			szSubAllChanGold = 7;//金币上限
+	repeated	string			szSubAllJu = 8;//金币最后赢的总和
+	repeated	int32			nRoomID = 9;
+	repeated	string			szSubWinLv = 10;//赢等级
+	repeated	string			szSubLostLv = 11;//输等级
+	repeated	int32			nCount = 12;//保存的数据条数
+};
+
+//10012.cli删除被控玩家
+message MsgcControlDelUser {
+	string			szSubID = 1;//人的游戏ID
+	int32			nRoomID = 2;
+};
+
+//10013.svr发送被控人数结束
+message MsgsUserControlXmsFinish {
+	int32			nControlCount = 1;			//总共发送被控人数
+}
+
+//10014.svr删除被控玩家一个
+message  MsgsControlDelUser {
+	string			szSubID = 1;//人的游戏ID
+	int32			nRoomID = 2;
+	int32			nCount = 3;//保存的数据条数
+};
+
+//10015.svr个人控制结构图一个
+message  MsgsUserControlUpXmsStock {
+	repeated	string			szMobOdds = 1;//手机控制概率
+	repeated	string			szMobflag = 2;//手机控制类型
+	repeated	string			szPcOdds = 3;//pc控制概率
+	repeated	string			szPcflag = 4;//pc控制类型
+	repeated	int32			nConType = 5;
+	repeated	int32			nKind = 6;
+	repeated	int32			nRoomID = 7;
+	repeated	int64	        llServerStort = 8;
+	repeated	int64	        llServerStortLv1 = 9;
+	repeated	int64	        llServerStortLv2 = 10;
+	repeated	int64	        llServerStortLv3 = 11;
+	repeated	int64	        llServerStortLv4 = 12;
+	repeated	int64	        llServerStortLv5 = 13;
+	repeated	int64	        llleast = 14;
+	repeated	int32			nCount = 15;//保存的数据条数
+};
+
+//10016.svr库存不足
+message MsgsNotStock {
+	int32			nResultCode = 1;						//错误代码
+	int32			nServerID = 2;
+};
+
+//10017.svr在线玩家
+message MsgsLineUser {
+	repeated	int32			nUserID = 1;
+	repeated	int32			nGameID = 2;
+	repeated	string			szNickName = 3;			//用户昵称
+	repeated	int64           llCurScore = 4;
+	repeated	int64           llInsureScore = 5;
+	repeated	int32			nKindId = 6;
+	repeated	int32			nRoomID = 7;
+	repeated	int64           llTodayInVal = 8;//最后转入
+	repeated	int64           llAllChangVal = 9;//最近一周总输赢
+	repeated	int64           llTodayGold = 10;
+};
+
+//10018.svr用户离开
+message MsgsOnlineUserLeave {
+	int32			nUserID = 1;							//用户标识
+	int32			nRoomID = 2;
+};
+
+//10019.svr用户进入更新分数
+message MsgsPlayUserUpdataScore {
+	int32			nGameID = 1;							//游戏标识
+	int64           llCurScore = 2;
+	int64           llInsureScore = 3;
+	int32			nRoomID = 4;
+};
+
+//10020.svr用户写分
+message MsgsOnlineUserWriteScore {
+	int32			nGameID = 1;							//游戏标识
+	int64           llChanScore = 2;
+	int32			nWriteMode = 3;
+	int32			nRoomID = 4;
+};
+
+//10021.svr用户XX分数变动
+message MsgsUserInsureTran {
+	int32			nTranGameID = 1;
+	int64           llTranScore = 2;
+	int32			nRoomID = 3;
+};
+
+//10022.svr捕鱼服务器反馈回可能作弊玩家
+message MsgsFishingCheatingUser {
+	int32			nMsgIndex = 1;					//1作弊玩家
+	int32			nRoomID = 2;					//房间标识
+	int32			nTableID = 3;					//桌子号
+	int32			nChairID = 4;					//椅子号
+	int32			nGameID = 5;					//玩家游戏ID
+	string			szNickName = 6;	//用户昵称
+};
+
+//10023.svr_game被控玩家信息发送到游戏服务器
+message MsgsgPlayUserTanCon {
+	int32			nGameID = 1;
+	int32			nFlydds = 2;
+	int64			llCurChangVal = 3;
+	int64			llMaxVal = 4;
+	int32			nWinOrLost = 5;
+	int32			nJuCount = 6;
+	int32			nRoomID = 7;
+	int32			nWinLv = 8;
+	int32			nLostLv = 9;
+};
+
+//10024.svr房间列表
+message MsgsGameServerInfo{
+	repeated	int32			nRoomID = 1;
+	repeated	int32			nKindID = 2;							//名称索引
+	repeated	int32			nServerID = 3;							//房间索引
+	repeated	int32			nOnLineCount = 4;						//在线人数
+	repeated	int32			nFullCount = 5;						//满员人数
+	repeated	string			szServerName = 6;			//房间名称
+	repeated	int64			llMaxEnterScore = 7;						//最大进入分数
+	repeated	int64			llMinEnterScore = 8;						//最小进入分数
+};

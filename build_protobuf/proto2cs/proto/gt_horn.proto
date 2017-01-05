@@ -1,0 +1,57 @@
+/*
+邮箱消息
+喇叭消息
+code 940~959
+*/
+syntax = "proto3";
+package gt_msg;
+ 
+//信箱
+message HornEmail{
+  HornEmailSend EmailInfo=1; //信件内容
+  int32 RetDel =2;//信箱是否删除 0代表未删除 1代表已删除
+} 
+
+//信箱发送内容
+message HornEmailSend{
+  string  Time=1; //信件的时间
+  string Title=2;//信件的标题
+  int32 Type=3;//信件的类型 1代表系统发送的  2代表银行发送的
+  string Content=4;//信件内容
+  int64  MailIndex=5;//信件索引
+  int32 RetRead = 6;  //是否已读 0代表未阅读 1代表已阅读
+}
+
+// 940 信箱注册
+message HornEmailRegisterRequest{
+     string Userid = 1;
+}
+
+//941 发送信箱
+message HornEmailResponse{
+ repeated HornEmailSend StCEmail=1;
+}
+
+//942 信箱已读回复
+message HornEmailReadRequst{
+  string Userid = 1;//用户id
+  int64  MailIndex=2;//信件索引
+  int32 RetRead = 3;  //是否已读 0代表未阅读 1代表已阅读
+} 
+
+//943 信件已删除
+message HornEmailDelRequst{
+  string Userid = 1;//用户id
+  int64  MailIndex=2;//信件索引
+  int32 RetDel =3;//信箱是否删除 0代表未删除 1代表已删除
+} 
+
+//944 喇叭回复
+message HornResponse{
+   string Message =1;
+}
+
+
+
+
+

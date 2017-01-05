@@ -1,0 +1,176 @@
+/*
+通比牛牛
+code 2500-2600
+*/
+syntax = "proto3";
+package gt_msg;
+
+//import "gt_base.proto";
+
+//2570 - 2600 游戏逻辑消息定义
+
+//2570 游戏状态
+message TBNN_S_StatusFreeResponse{
+      int64 lCellScore =1;//基础积分
+      int32 wMaxDownType =2;//积分信息 //历史积分
+      int64 lCollectScore=3;//积分信息
+}
+
+//2571 游戏状态
+message TBNN_S_StatusCallResponse{
+      int32 wCallBanker =1; //叫庄用户
+}
+
+//2572 游戏状态
+message TBNN_S_StatusScoreResponse{//下注信息
+  
+      int64 TurnMaxScore =1; //最大下注
+    repeated int64 lTableScore =2;  //下注数目
+      int32 wBankerUser =3;  //庄家用户
+      int32 wMaxDownType =4; //最大倍数
+      int64 lCollectScore =5;
+}
+
+//2573 游戏状态
+message TBNN_S_StatusPlayResponse{
+    repeated int32 cbPlayStatus  = 1;  //有效玩家      
+      int64 lTurnMaxScore = 2;   //最大下注             
+    repeated int64 lTableScore   = 3;   //下注数目
+      int32  wBankerUser  = 4;   //庄家用户        
+    repeated TBNN_CardData  cbHandCardData = 5;//桌面扑克
+    repeated int32  cbHandCardCount = 6;     //扑克数目
+    repeated bool  bUserOpenCard = 7;   //用户是否摊牌    
+      int32 cbSelfOxCardType = 8;     //自己牛型      
+    repeated int32 bOxCard = 9;       //牛牛数据
+      int32 wMaxDownType =10; //最大倍数                 
+      int64 lCollectScore =11;         
+}
+
+// 2574 用户叫庄
+message TBNN_S_CallBankerResponse{
+      int32 wCallBanker=1; //叫庄用户
+  
+}
+
+// 2575 游戏开始
+message TBNN_S_GameStartResponse{
+ //下注信息
+    repeated int32 cbPlayStatus  =1; //有效玩家
+      int64 lTurnMaxScore=2; //最大下注
+      bool bIsTestUser=3;      //xsh[2013/5/22]测试用户
+      int32 wMaxMultiple=4; //最大翻倍;
+}
+
+// 2576 用户下注
+message TBNN_S_AddScoreResponse{
+      int32 wAddScoreUser=1; //加注用户
+      int64 lAddScoreCount=2; //加注数目
+}
+
+//2577 游戏结束
+message TBNN_S_GameEndResponse{
+    repeated int64 lGameTax=1;//游戏税收
+    repeated int64 lGameScore=2; //游戏得分
+    repeated TBNN_CardData cbCardData = 3;  //用户扑克
+    repeated int32 cbCardCount= 4;      //用户扑克个数
+    repeated int32 bUserOxCard= 5;      //是否牛牌
+    repeated int32 cbUserOxCardType= 6;    //牛型
+    repeated int64 lUserGold = 7;        //玩家金币
+   
+}
+// 游戏结束时玩家手上的牌
+message TBNN_CardData{  
+      int32 wchairId = 1;
+     repeated int32 cbHandCardData =2;
+}
+
+// 2578 发牌数据包
+message TBNN_S_SendCardResponse{
+      int32 wchairId = 1;
+    repeated int32 cbCardData=2; //用户扑克
+    repeated int32 cbCardCount=3; //扑克长度
+}
+
+// 2580 用户退出
+message TBNN_S_PlayerExitResponse{
+      int32 wPlayerID =1; //退出用户
+}
+
+// 2581 用户摊牌
+message TBNN_S_OpenCardResponse{
+      int32 wPlayerID=1; //摊牌用户
+      int32 bOpen=2; //摊牌标志
+    repeated int32 bOpenCardData =3;  //摊出的五张牌
+}
+
+
+// 2582 用户叫庄
+message TBNN_C_CallBankerRequest{
+      int32 bBanker =1;//做庄标志
+}
+
+// 2583 用户加注
+message TBNN_C_AddScoreRequest{
+      int64 lScore =1; //加注数目
+}
+
+// 2584 用户摊牌
+message TBNN_C_OxCardRequest{
+    int32 bOX = 1; //牛牛标志
+  repeated int32 bCardDataOut = 2;//摊出的五张牌(先3后2)
+};
+
+///////////////////////////////
+//2585 游戏控制
+message TBNN_GAME_CONTROL
+{
+    bool bIsWinOrLose =1; //是否输赢
+    int32  wControlGameID=2;            //控制椅子号
+    bool   IsControl=3;               //是否控制
+    int32  dwGameID=4;              //控制人员
+};
+
+//2586
+message TBNN_C_AdminReq
+{
+    int32 cbReqType = 1;
+ //RQ_SET_WIN_AREA 1
+ //RQ_RESET_CONTROL  2
+ //RQ_PRINT_SYN    3
+  repeated int32 cbExtendData =2;      //附加数据
+};
+
+// 2587 请求回复
+message TBNN_S_CommandResult
+{
+    int32 cbAckType =1;         //回复类型
+//ACK_SET_WIN_AREA  1
+//ACK_PRINT_SYN     2
+//ACK_RESET_CONTROL 3
+    int32 cbResult =2;
+//CR_ACCEPT  2      //接受
+//CR_REFUSAL 3      //拒绝
+  repeated int32 cbExtendData =3;      //附加数据
+};
+// 2588 控制区域信息
+message tagControlInfo
+{
+     int32 nAreaWin = 1;    //控制区域
+};
+// 2589 
+message TBNN_S_ControlReturns
+{
+    int32 cbReturnsType = 1;       //回复类型
+    int32 cbControlArea = 2; //控制区域
+    int32 cbControlTimes = 3;     //控制次数
+};
+// 2590
+message TBNN_C_ControlApplication
+{
+    int32 cbControlAppType =1;      //申请类型
+    int32 cbControlArea =2; //控制区域
+    int32 cbControlTimes =3;      //控制次数
+};
+
+
+

@@ -1,0 +1,236 @@
+/*
+16人牛牛
+code 2300~2399
+*/
+syntax = "proto3";
+package gt_msg;
+
+//import "gt_base.proto";
+
+//失败结构 2340
+message OxBattle_S_PlaceJettonFail{
+	 int32 wPlaceUser=1; //下注玩家
+	 int32 lJettonArea=2; //下注区域
+	 int64 lPlaceScore=3; //当前下注
+}
+//存取结构 2341
+message OxBattle_S_RobotUpdateScore{
+	 int64 lScore=1; //存取值
+} 
+//更新积分 2342
+message OxBattle_S_ChangeUserScore{
+	 int32 wChairID=1; //椅子号码
+	 int64 lScore=2; //玩家积分
+	//庄家信息
+	 int32 wCurrentBankerChairID=3; //当前庄家
+	 int32 cbBankerTime=4; //庄家局数
+	 int64 lCurrentBankerScore=5; //庄家分数
+}
+
+//申请庄家 2343
+message OxBattle_S_ApplyBanker{
+	 int32 wApplyUser=1; //申请玩家
+}
+
+//取消申请 2344
+message OxBattle_S_CancelBanker{
+	 string szCancelUser=1; //取消玩家
+	 int32 wApplyUser=2; 
+}
+
+//切换庄家 2345
+message OxBattle_S_ChangeBanker{
+	 int32 wBankerUser=1; //当庄玩家
+	 int64 lBankerScore=2; //庄家金币
+}
+
+//游戏状态 2346
+message OxBattle_S_StatusFree{
+	//全局信息
+	 int32 cbTimeLeave=1; //剩余时间
+	//玩家信息
+	 int64 lUserMaxScore=2; //玩家金币
+	//庄家信息
+	 int32 wBankerUser=3; //当前庄家
+	 int32 cbBankerTime=4; //庄家局数
+	 int64 lBankerWinScore=5; //庄家成绩
+	 int64 lBankerScore=6; //庄家分数
+	 bool bEnableSysBanker=7; //系统做庄
+	//控制信息
+	 int64 lApplyBankerCondition=8; //申请条件
+	 int64 lAreaLimitScore=9; //区域限制
+	//房间信息
+	 string szGameRoomName=10; //房间名称
+	 int64 lCollectScore=11;  
+	 int64 lTurnScore=12;
+}
+
+message OxBattleCardData{
+    repeated int32 CardData=1;
+}
+
+//游戏状态 2347
+message OxBattle_S_StatusPlay{
+	//全局下注
+	repeated int64 lAllJettonScore=1; //全体总注
+	//玩家下注
+	repeated int64 lUserJettonScore=2; //个人总注
+	//玩家积分
+	 int64 lUserMaxScore=3; //最大下注 
+	//控制信息
+	 int64 lApplyBankerCondition=4; //申请条件
+	 int64 lAreaLimitScore=5; //区域限制
+	//扑克信息
+	repeated OxBattleCardData cbTableCardArray=6; //桌面扑克
+    repeated int32 bcFirstCard=7; 
+	//庄家信息
+	 int32 wBankerUser=8; //当前庄家
+	 int32 cbBankerTime=9; //庄家局数
+	 int64 lBankerWinScore=10; //庄家赢分
+	 int64 lBankerScore=11; //庄家分数
+	 bool bEnableSysBanker=12; //系统做庄
+	//结束信息
+	 int64 lEndBankerScore=13; //庄家成绩
+	 int64 lEndUserScore=14; //玩家成绩
+	 int64 lEndUserReturnScore=15; //返回积分
+	 int64 lEndRevenue=16; //游戏税收
+	//全局信息
+	 int32 cbTimeLeave=17; //剩余时间
+	 int32 cbGameStatus=18; //游戏状态
+	//房间信息
+	 string szGameRoomName=19; //房间名称
+	 int64 lCollectScore=20; 
+	 int64 lTurnScore=21;
+}
+
+//游戏空闲 2348
+message OxBattle_S_GameFree{
+	 int32 cbTimeLeave=1;//剩余时间
+}
+
+//游戏开始 2349
+message OxBattle_S_GameStart{
+	 int32 wBankerUser=1; //庄家位置
+	 int64 lBankerScore=2; //庄家金币
+	 int64 lUserMaxScore=3; //我的金币
+	 int32 cbTimeLeave=4; //剩余时间	
+	 bool bContiueCard=5; //继续发牌
+	 int32 nChipRobotCount=6; //人数上限 (下注机器人)
+}
+
+//用户下注 2350
+message OxBattle_S_PlaceJetton{
+	 int32 wChairID=1; //用户位置
+	 int32 cbJettonArea=2; //筹码区域
+	 int64 lJettonScore=3; //加注数目
+	 bool bIsAndroid=4; //是否机器人
+}
+
+//游戏结束 2351
+message OxBattle_S_GameEnd{
+	//下局信息
+	 int32 cbTimeLeave=1; //剩余时间
+	//扑克信息
+	repeated OxBattleCardData cbTableCardArray=2; //桌面扑克
+	 int32 cbLeftCardCount=3; //扑克数目
+	repeated int32 bcFirstCard=4;
+	//庄家信息
+	 int64 lBankerScore=5; //庄家成绩
+	 int64 lBankerTotallScore=6; //庄家成绩
+	 int32 nBankerTime=7; //做庄次数
+	//玩家成绩
+	 int64 lUserScore=8; //玩家成绩
+	 int64 lUserReturnScore=9; //返回积分
+	//全局信息
+	 int64 lRevenue=10; //游戏税收
+}
+
+// 2352
+message OxBattle_C_SendAccount{
+	repeated int32 m_UserID=1; //玩家ID
+	 int32 m_UserCount=2; //玩家数量
+}
+// 2353
+message OxBattle_S_UserJettonScore{
+	//玩家下注
+	repeated int64 lUserJettonScore=1;//个人总注
+}
+//控制区域信息 2354
+message OxBattle_TagControlInfo{
+	repeated int32 cbControlArea=1;//控制区域
+}
+
+// 2355
+message OxBattle_C_CheakAccount{
+	repeated string dwUserAccount=1;//取消玩家
+}
+
+// 2356
+message OxBattle_TagAdminReq{
+	 int32 m_cbExcuteTimes=1; //执行次数
+	 int32 m_cbControlStyle=2; //控制方式
+	repeated bool m_bWinArea=3; //赢家区域
+}
+
+// 2357
+message OxBattle_C_AdminReq{
+	 int32 cbReqType=1;
+	repeated int32 cbExtendData=2;			//附加数据
+}
+//用户下注 2358
+message OxBattle_C_PlaceJetton{
+	 int32 cbJettonArea=1; //筹码区域
+	 int64 lJettonScore=2; //加注数目
+}
+
+//房间提示信息 2359
+message OxBattle_MessageInfo{
+     string szMessageInfo = 1;
+}
+
+// 2360
+message OxBattle_GAME_TABLE_JETTON{
+     int32 wTableID =1;
+}
+
+message OxBattleHistoryScore{
+    repeated int32 historyScore =1;
+}
+// 2361
+message OxBattle_TABLE_START{
+      int32  wTableID =1;
+	repeated  OxBattleHistoryScore byHistoryScore=2;
+}
+// 2362
+message OxBattle_TABLE_END{
+	 int32   wTableID=1;
+	repeated  int64  llUserScore=2;
+}
+//申请庄家 2363
+message OxBattle_C_APPLY_BANKER{
+}
+//取消申请 2364
+message OxBattle_C_CANCEL_BANKER{
+}
+//继续发牌 2365
+message OxBattle_C_CONTINUE_CARD{
+} 
+//管理员命令 2366
+message OxBattle_C_AMDIN_COMMAND{
+} 
+//获取昵称 2367
+message OxBattle_C_GET_ACCOUNT{
+} 
+//获取昵称 2368
+message OxBattle_C_CHEAK_ACCOUNT{
+}
+
+
+//发送游戏记录 2369
+message OxBattle_S_SendRecord{
+	 int32 recordCount =1;//记录总数
+	repeated bool bWinShunMen=2; //顺门胜利
+	repeated bool bWinDuiMen =3; //对门胜利
+	repeated bool bWinDaoMen =4; //倒门胜利
+	repeated bool bWinHuang  =5; //倒门胜利
+}

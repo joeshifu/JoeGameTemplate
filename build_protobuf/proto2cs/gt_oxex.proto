@@ -1,0 +1,145 @@
+/*
+二人牛牛
+code 900~999
+*/
+syntax = "proto3";
+package gt_msg;
+
+//import "gt_base.proto";
+
+
+//970 - 1000 游戏逻辑消息定义 @mp
+
+//970 游戏状态
+message OXEX_StatusFreeResponse{
+     int64 lCellScore =1;//基础积分
+    repeated int64 lTurnScore =2;//积分信息 //历史积分
+    repeated int64 lCollectScore=3;//积分信息
+    repeated string szGameRoomName =4;//房间名称
+}
+
+//971 游戏状态
+message OXEX_StatusCallResponse{
+     int32 wCallBanker =1; //叫庄用户
+     bool cbDynamicJoin =2;//动态加入 
+    repeated int32 cbPlayStatus=3;//用户状态
+    repeated int64 lTurnScore=4;//积分信息
+    repeated int64 lCollectScore=5;//积分信息
+    repeated string szGameRoomName=6;//房间名称
+}
+
+//972 游戏状态
+message OXEX_StatusScoreResponse{
+    //下注信息
+    repeated int32 cbPlayStatus=1; //用户状态
+     bool cbDynamicJoin=2; //动态加入
+     int64 lTurnMaxScore=3; //最大下注
+    repeated int64 lTableScore=4; //下注数目
+     int32 wBankerUser=5; //庄家用户
+    repeated string szGameRoomName=6;//房间名称
+
+   //历史积分
+    repeated int64 lTurnScore=7; //积分信息
+    repeated int64 lCollectScore=8;//积分信息
+}
+
+//973 游戏状态
+message OXEX_StatusPlayResponse{
+   //状态信息
+    repeated int32 cbPlayStatus=1; //用户状态
+     bool cbDynamicJoin=2; //动态加入
+     int64 lTurnMaxScore=3; //最大下注
+    repeated int64 lTableScore =4; //下注数目
+     int32 wBankerUser =5; //庄家用户
+    //扑克信息
+    repeated HandCardData cbHandCardData=6;//桌面扑克
+    repeated int32 bOxCard =7;//牛牛数据
+
+    //历史积分
+    repeated int64 lTurnScore=8; //积分信息
+    repeated int64 lCollectScore=9; //积分信息
+    repeated string szGameRoomName=10; //房间名称
+}
+
+// 974 用户叫庄
+message OXEX_CallBankerResponse{
+     int32 wCallBanker=1; //叫庄用户
+     bool bFirstTimes=2; //首次叫庄
+}
+
+// 975 游戏开始
+message OXEX_GameStartResponse{
+ //下注信息
+     int64 lTurnMaxScore=1; //最大下注
+     int32 wBankerUser=2; //庄家用户
+}
+
+// 976 用户下注
+message OXEX_AddScoreResponse{
+     int32 wAddScoreUser=1; //加注用户
+     int64 lAddScoreCount=2; //加注数目
+}
+
+//977 游戏结束
+message OXEX_GameEndResponse{
+    repeated int64 lGameTax=1;//游戏税收
+    repeated int64 lGameScore=2; //游戏得分
+    repeated int32 cbOxCardType=3; //牛牛数据
+    //扑克信息
+    repeated HandCardData cbHandCardData=4;//桌面扑克
+    repeated int32 cbHandCardCount=5; //桌面扑克
+}
+// 游戏结束时玩家手上的牌
+message HandCardData{
+     repeated int32 cbHandCardData =1;
+}
+
+// 978 发牌数据包
+message OXEX_SendCardResponse{
+    repeated HandCardData cbCardData=1; //用户扑克
+    repeated int32 cbCardCount=2; //扑克长度
+     bool bAllAndroidUser=3; //全部机器
+}
+
+// 979 发牌数据包
+message OXEX_AllCardResponse{
+    repeated bool bAICount=1;
+    repeated HandCardData cbCardData=2; //用户扑克
+}
+
+// 980 用户退出
+message OXEX_PlayerExitResponse{
+     int32 wPlayerID =1; //退出用户
+}
+
+// 981 用户摊牌
+message OXEX_OpenCardResponse{
+     int32 wPlayerID=1; //摊牌用户
+     int32 bOpen=2; //摊牌标志
+}
+
+// 982
+message OXEX_UserOutResponse{
+     int32 wChairID=1;
+};
+
+
+// 983 用户叫庄
+message OXEX_CallBankerRequest{
+     int32 bBanker =1;//做庄标志
+}
+
+// 984 终端类型
+message OXEX_SPECIALRequest{
+      int32  wUserChairID =1 ;  //用户方位
+}
+
+// 985 用户加注
+message OXEX_AddScoreRequest{
+     int64 lScore =1; //加注数目
+}
+
+// 986 用户摊牌
+message OXEX_OxCardRequest{
+   int32 bOX = 1; //牛牛标志
+};

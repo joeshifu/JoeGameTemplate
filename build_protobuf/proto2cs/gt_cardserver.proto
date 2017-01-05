@@ -1,0 +1,165 @@
+/*
+房卡房消息
+code 10201~10299
+*/
+syntax = "proto3";
+package gt_msg;
+//import "gt_base.proto";
+
+//907 用户上桌UserSitDown，这消息禁用，房卡房使用消息“10207.用户上桌”
+
+//900 用户进入房间LogonUserID
+//901 用户进入房间回复_失败LogonRoomFail
+//902 用户进入房间回复_成功LogonRoomSuccess
+
+//10201.用户进入房间成功，返回房卡房信息：公共房间
+message MsgsCardSvrAllPublicRoom{
+	int32 nSendCount = 1;	//发送房间个数
+	repeated int32 nRoomCardNum = 2;  //房卡号
+	repeated int32 nRoomTableID = 3;  //桌子号(0开始)
+	repeated int32 nOwnersGameID = 4;  //房主GameID
+	repeated string szOwnersName = 5; //房主昵称
+	repeated int32 nRoomType = 6;  //0公开,1私密
+	repeated int32 nScoreType = 7;  //0金币,1积分
+	repeated int64 llBaseScore = 8;  //底分(积分场有效，金币场由财富最少玩家确定)
+	repeated int64 llEnterScore = 9;  //最少进入分数
+	repeated string szBuildTime = 10; //创建时间(2006-01-02 15:04:05)
+	repeated int32 nCurGameCount = 11;  //当前已玩局数
+}
+
+//10202.用户进入房间成功，返回房卡房信息：用户创建房间
+message MsgsCardSvrAllSelfRoom{
+	int32 nSendCount = 1;	//发送房间个数
+	repeated int32 nRoomCardNum = 2;  //房卡号
+	repeated int32 nRoomTableID = 3;  //桌子号(0开始)
+	repeated int32 nOwnersGameID  = 4;  //房主GameID
+	repeated string szOwnersName  = 5;  //房主昵称
+	repeated int32 nGameCount     = 6;  //局数
+	repeated int32 nCardCount     = 7;  //消耗房卡数
+	repeated int32 nRoomType      = 8;  //0公开,1私密
+	repeated int32 nScoreType     = 9;  //0金币,1积分
+	repeated int64 llBaseScore    = 10;  //底分(积分场有效，金币场由财富最少玩家确定)
+	repeated int64 llEnterScore    = 11; //最少进入分数
+	repeated string szBuildTime    = 12; //创建时间(2006-01-02 15:04:05)
+	repeated int32 nOwnersTaxRate  = 13; //房主税收(1000分之几,只对赢家收税)
+	repeated int32 nSysTaxRate     = 14; //系统税收(1000分之几,对房主税收收税)
+	repeated int32 nCurGameCount  = 15;  //当前已玩局数
+	repeated int64 llOwnersTax     = 16; //房主已收税
+	repeated int64 llSysTax        = 17; //系统已收税
+}
+
+//10203.用户进入房间成功，返回房卡房信息：用户参与房间
+message MsgsCardSvrAllJoinRoom{
+	int32 nSendCount = 1;	//发送房间个数
+	repeated int32 nRoomCardNum = 2;  //房卡号
+	repeated int32 nRoomTableID = 3;  //桌子号(0开始)
+	repeated int32 nOwnersGameID = 4;  //房主GameID
+	repeated string szOwnersName = 5; //房主昵称
+	repeated int32 nGameCount     = 6;  //局数
+	repeated int32 nRoomType = 7;  //0公开,1私密
+	repeated int32 nScoreType = 8;  //0金币,1积分
+	repeated int64 llBaseScore = 9;  //底分(积分场有效，金币场由财富最少玩家确定)
+	repeated int64 llEnterScore = 10;  //最少进入分数
+	repeated string szBuildTime = 11; //创建时间(2006-01-02 15:04:05)
+	repeated int32 nCurGameCount = 12;  //当前已玩局数
+}
+
+//10204.创建房卡房
+message MsgcCardSvrBuildRoom{
+	int32 nOwnersGameID	= 1;  //房主GameID
+	int32 nGameCount		= 2;  //局数
+	int32 nCardCount		= 3;  //消耗房卡数
+	int32 nRoomType		= 4;  //0公开,1私密
+	int32 nScoreType		= 5;  //0金币,1积分
+	int64 llBaseScore		= 6;  //底分(积分场有效，金币场由财富最少玩家确定)
+	int64 llEnterScore		= 7; //最少进入分数(最少100)
+	int32 nOwnersTaxRate	= 8; //房主税收(1000分之几,只对赢家收税)
+}
+
+//10205.创建房卡房成功
+message MsgsCardSvrBuildRoomSuccess{	
+	int32 nRoomCardNum		= 1;  //房卡号
+	int32 nRoomTableID		= 2;  //桌子号(0开始)
+	int32 nOwnersGameID	= 3;  //房主GameID
+	string szOwnersName	= 4;  //房主昵称
+	int32 nGameCount		= 5;  //局数
+	int32 nCardCount		= 6;  //消耗房卡数
+	int32 nRoomType		= 7;  //0公开,1私密
+	int32 nScoreType		= 8;  //0金币,1积分
+	int64 llBaseScore		= 9;  //底分(积分场有效，最小1)
+	int64 llEnterScore		= 10; //最少进入分数(金币场有效，最小100)
+	string szBuildTime		= 11; //创建时间(2006-01-02 15:04:05)
+	int32 nOwnersTaxRate	= 12; //房主税收(1000分之几,只对赢家收税)
+	int32 nSysTaxRate		= 13; //系统税收(1000分之几,对房主税收收税)
+	int32 nCurGameCount	= 14;  //当前已玩局数
+	int64 llOwnersTax		= 15; //房主已收税
+	int64 llSysTax			= 16; //系统已收税
+}
+
+//10206.创建房卡房失败
+message MsgsCardSvrBuildRoomFail{	
+	int32 nGameID		= 1;  //玩家GameID
+	int32 nFailReason		= 2;  //失败原因[1房卡数不足、2房满为患、3系统维护、4权限不足、5参数错误、6未知原因]
+	string szReason		= 3; //失败原因描述[1房卡数不足、2房满为患、3系统维护、4权限不足、5参数错误、6未知原因]
+}
+
+
+//10207.房卡房用户上桌
+message MsgcCardSvrUserSitDown{
+	 int32 nRoomNum = 1;	//房卡号
+}
+
+//10208.房卡房上桌失败
+message MsgsCardSvrUserSitDownFail{	
+	int32 nGameID		= 1;  //玩家GameID
+	int32 nRoomNum = 2;	//房卡号
+	int32 nFailReason		= 3;  //失败原因[1房间不存在、2没有空位置、3财富不足、4限制相同ip、5系统维护、6权限不足、7未知原因]
+	string szReason		= 4; //失败原因描述[1房间不存在、2没有空位置、3财富不足、4限制相同ip、5系统维护、6权限不足、7未知原因]
+}
+
+//10209.更新房卡房信息
+message MsgsCardSvrUpdateRoom{
+	int32 nSendCount = 1;	//发送房间个数
+	repeated int32 nRoomCardNum = 2;  //房卡号
+	repeated int32 nCurGameCount  = 3;  //当前已玩局数
+	repeated int64 llOwnersTax     = 4; //房主已收税
+	repeated int64 llSysTax        = 5; //系统已收税
+}
+
+//10210.解散房卡房
+message MsgsCardSvrDeleteRoom{
+	int32 nRoomCardNum = 1;  //房卡号
+	int32 nOwnersGameID = 2;	//房主GameID
+	int32 nDeleteReason = 3;	//解散原因[1局数已到、2房主回收、3系统回收、4未知原因]
+	string szReason = 4;		//解散原因描述[1局数已到、2房主回收、3系统回收、4未知原因]
+}
+
+//10211.获取房卡房信息
+message MsgcCardSvrRequestRoomInfo{
+	//nRoomType类型：0=房卡号为nRoomNum的房卡房信息，1=自己创建的房卡房，2=自己参与的房卡房，3=公共房卡房
+	//nRoomType类型：0=房卡号为nRoomNum的房卡房信息,回包MsgsCardSvrAllRoomInfo，1=自己创建的房卡房，回包MsgsCardSvrAllSelfRoom
+	//nRoomType类型：2=自己参与的房卡房，回包MsgsCardSvrAllJoinRoom，3=公共房卡房，回包MsgsCardSvrAllPublicRoom
+	int32 nRoomType = 1;	//类型：0=房卡号为nRoomNum的房卡房信息，1=自己创建的房卡房，2=自己参与的房卡房，3=公共房卡房
+	int32 nRoomNum = 2;	//房卡号
+}
+
+//10212.返回房卡房信息
+message MsgsCardSvrAllRoomInfo{
+	int32 nSendCount = 1;	//房间个数(0表示房间不存在)
+	int32 nRoomCardNum = 2;  //房卡号
+	int32 nRoomTableID = 3;  //桌子号(0开始)
+	int32 nOwnersGameID  = 4;  //房主GameID
+	string szOwnersName  = 5;  //房主昵称
+	int32 nGameCount     = 6;  //局数
+	int32 nCardCount     = 7;  //消耗房卡数
+	int32 nRoomType      = 8;  //0公开,1私密
+	int32 nScoreType     = 9;  //0金币,1积分
+	int64 llBaseScore    = 10;  //底分(积分场有效，金币场由财富最少玩家确定)
+	int64 llEnterScore    = 11; //最少进入分数
+	string szBuildTime    = 12; //创建时间(2006-01-02 15:04:05)
+	int32 nOwnersTaxRate  = 13; //房主税收(1000分之几,只对赢家收税)
+	int32 nSysTaxRate     = 14; //系统税收(1000分之几,对房主税收收税)
+	int32 nCurGameCount  = 15;  //当前已玩局数
+	int64 llOwnersTax     = 16; //房主已收税
+	int64 llSysTax        = 17; //系统已收税
+}
